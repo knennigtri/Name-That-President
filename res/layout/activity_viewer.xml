@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <FrameLayout
+        android:id="@+id/viewer_photoFrame"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="10dp"
+	    android:layout_marginLeft="10dp"
+	    android:layout_marginRight="10dp"
+	    android:layout_marginBottom="140dp"
+	    android:background="#000000"
+	    android:orientation="vertical">
+
+        <ImageView
+		    android:id="@+id/viewer_imageView"
+		    android:text="text"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content" 
+		    />
+        
+		<LinearLayout 
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content" 
+		    android:orientation="horizontal">
+		    
+		    <TextView 
+            android:id="@+id/viewer_picture_counter"
+            android:text="0"
+            android:textColor="#ffffff"
+            style="@style/ViewerText"
+            />
+		    
+		    <TextView 
+            android:id="@+id/viewer_memorized"
+            android:text="0"
+            android:textColor="#70c656" 
+            style="@style/ViewerText"
+            />
+		    
+		    <TextView 
+            android:id="@+id/viewer_wrong"
+            android:text="0"
+            android:textColor="#ef4444"
+            style="@style/ViewerText"
+            />
+		    
+		</LinearLayout>
+        
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/viewer_controlsFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="20dp"
+        android:orientation="vertical" >
+        
+        <TextView
+        android:id="@+id/viewer_photoName"
+        style="@style/ButtonText">
+   		</TextView>
+   		
+        <Button
+        android:id="@+id/viewer_next_button"
+        android:background="@drawable/blue_button"
+           style="@style/ButtonText"
+        android:text="@string/viewer_next_button" />
+        
+	</LinearLayout>
+</RelativeLayout>
