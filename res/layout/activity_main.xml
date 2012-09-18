@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/main_text_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="106dp"
+        android:layout_marginTop="87dp"
+        android:text="@string/main_welcome_text"/>
+
+    <TextView
+        android:id="@+id/currentStatText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="106dp"
+        android:layout_marginTop="87dp"
+        android:text="@string/main_current_stat" />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main_text_ll"
+        android:orientation="vertical">
+	    <Button
+	        android:id="@+id/main_start_button"
+	        android:background="@drawable/blue_button"
+	        style="@style/ButtonText"
+	        android:text="@string/main_start_button" />
+	
+	    <Button
+	        android:id="@+id/main_more_games_button"
+	        android:background="@drawable/blue_button"
+	        style="@style/ButtonText"
+	        android:text="@string/main_more_games"/>
+	</LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,11 @@
+<resources>
+
+    <string name="app_name">Name That President</string>
+    <string name="menu_settings">Settings</string>
+    <string name="main_title">Name That President</string>
+    <string name="main_welcome_text">Welcome to Name That</string>
+    <string name="main_current_stat">Best attempt:</string>
+    <string name="main_start_button">Start</string>
+    <string name="main_more_games">See More Name That! Games</string>
+
+</resources>
