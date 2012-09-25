@@ -1,30 +1,27 @@
 package com.nennig.name.that.president;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
-import android.R;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
+@SuppressLint("NewApi")
 public class AssetManagement {
-	private static final String TAG = "FileManagement";
+	private static final String TAG = "AssetManagement";
 	private static String[] acceptedExtensions = {".jpg",".png"};
 	public static final String ROOT_FOLDER = Environment.getExternalStorageDirectory().toString();
-	//public static final String ROOT_FOLDER1 = 
 	
+	private int _numAssets;
 	private Activity _activity;
+	private Object[] _photoPaths;
 	
     public static String getPhotoName(String name){
     	
@@ -36,38 +33,61 @@ public class AssetManagement {
     	}   	
     	return name;
     }
-	
+    
 	public AssetManagement(Activity a){
 		_activity = a;
+		_numAssets = 0;
+	}
+	public AssetManagement(Activity a, ArrayList<String> paths){
+		_activity = a;
+		_numAssets = 0;
+		_photoPaths = paths.toArray();
+		Log.d(TAG, "AssetManagement Created with Asset List");
+		for(int i = 0; i<_photoPaths.length; i++)
+			Log.d(TAG,"Path: " + _photoPaths[i]);
 	}
 	
+	 public int getNumberOfAssets() throws IOException{
+    	if(_numAssets == 0)
+    		return getAssetPhotos().length;
+    	else
+    		return _numAssets;
+	 }
+	
     private Object[] getAssetPhotos() throws IOException{
-    	String[] arr = _activity.getAssets().list("");
-    	ArrayList<String> al = new ArrayList<String>();
-    	for(int i = 0; i<arr.length; i++)
+    	if(_photoPaths == null)
     	{
-    		for(int j = 0; j<acceptedExtensions.length;j++)
-    		{
-    			if(arr[i].contains(acceptedExtensions[j]))
-    			{
-    				al.add(arr[i]);
-    				j = acceptedExtensions.length;
-    			}	
-    		}
+	    	String[] arr = _activity.getAssets().list("");
+	    	ArrayList<String> al = new ArrayList<String>();
+	    	for(int i = 0; i<arr.length; i++)
+	    	{
+	    		for(int j = 0; j<acceptedExtensions.length;j++)
+	    		{
+	    			if(arr[i].contains(acceptedExtensions[j]))
+	    			{
+	    				al.add(arr[i]);
+	    				j = acceptedExtensions.length;
+	    			}	
+	    		}
+	    	}
+	    	String[] assets = new String[al.size()];
+	    	
+	    	for(int i = 0 ;i< assets.length;i++){
+	    		assets[i] = al.get(i);
+	    	}
+	    	
+	    	Log.d(TAG, "ArrayList finished.");
+	    	return assets;
     	}
-    	String[] assets = new String[al.size()];
-    	
-    	for(int i = 0 ;i< assets.length;i++){
-    		assets[i] = al.get(i);
-    	}
-    	
-    	Log.d(TAG, "ArrayList finished.");
-    	return assets;
+    	else
+    		return _photoPaths;
     }
     
     public String[] getShuffledAssetPhotos() throws IOException{
-    	String[] photos = (String[]) getAssetPhotos();
-    	shuffleArray(photos);
+    	Object[] oArr = getAssetPhotos();
+    	String[] photos = Arrays.copyOf(oArr,oArr.length, String[].class);
+    	shuffleArray((String[]) photos);
+    	Log.d(TAG, "Finished Shuffling");
     	return photos;
     }
     

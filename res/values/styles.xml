@@ -1,19 +1,41 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="android:Theme.Light" />
+    <style name="AppTheme" parent="android:Theme.Holo.NoActionBar" />
 	<style name="ButtonText">
 	    <item name="android:layout_width">fill_parent</item>
 	    <item name="android:layout_height">wrap_content</item>
 	    <item name="android:textColor">#ffffff</item>
 	    <item name="android:gravity">center</item>
-	    <item name="android:layout_margin">3dp</item>
-	    <item name="android:textSize">30dp</item>
+	    <item name="android:layout_margin">5dp</item>
+	    <item name="android:textSize">25dp</item>
 	    <item name="android:textStyle">bold</item>
 	    <item name="android:shadowColor">#000000</item>
 	    <item name="android:shadowDx">1</item>
 	    <item name="android:shadowDy">1</item>
 	    <item name="android:shadowRadius">2</item>
-
+	</style>
+	<style name="MainText">
+	    <item name="android:layout_width">wrap_content</item>
+	    <item name="android:layout_height">wrap_content</item>
+	    <item name="android:textColor">#ffffff</item>
+	    <item name="android:layout_gravity">center</item>
+	    <item name="android:gravity">center</item>
+	    <item name="android:textSize">30dp</item>
+	    <item name="android:textStyle">bold</item>
+	    <item name="android:fontFamily">Sans</item>
+	</style>
+	<style name="ScoreText">
+	    <item name="android:layout_width">fill_parent</item>
+	    <item name="android:layout_height">wrap_content</item>
+	    <item name="android:textColor">#ffffff</item>
+	    <item name="android:gravity">center</item>
+	    <item name="android:layout_margin">3dp</item>
+	    <item name="android:textSize">20dp</item>
+	    <item name="android:textStyle">bold</item>
+	    <item name="android:shadowColor">#000000</item>
+	    <item name="android:shadowDx">1</item>
+	    <item name="android:shadowDy">1</item>
+	    <item name="android:shadowRadius">2</item>
 	</style>
 	<style name="ListItem">
 	    <item name="android:layout_width">fill_parent</item>

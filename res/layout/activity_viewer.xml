@@ -72,7 +72,7 @@
         android:id="@+id/viewer_next_button"
         android:background="@drawable/blue_button"
            style="@style/ButtonText"
-        android:text="@string/viewer_next_button" />
+        android:text="@string/next_button" />
         
 	</LinearLayout>
 </RelativeLayout>

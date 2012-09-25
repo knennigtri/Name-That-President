@@ -1,46 +1,61 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent" 
+    android:background="#000000">
 
     <LinearLayout
         android:id="@+id/main_text_ll"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
     <TextView
-        android:id="@+id/welcomeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="106dp"
-        android:layout_marginTop="87dp"
+        android:id="@+id/main_welcomeText"
+        style="@style/MainText"
         android:text="@string/main_welcome_text"/>
-
+	<TextView
+        android:id="@+id/main_nameThat_name"
+        style="@style/MainText"
+        android:text="@string/app_name"/>
     <TextView
-        android:id="@+id/currentStatText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="106dp"
-        android:layout_marginTop="87dp"
-        android:text="@string/main_current_stat" />
+        android:id="@+id/main_best_attempt"
+        style="@style/MainText"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="left"
+        android:text="@string/main_text" />
+    <TextView
+        android:id="@+id/main_attempts"
+        style="@style/MainText"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="left"
+        android:text="@string/main_text" />
     </LinearLayout>
-    
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/main_text_ll"
-        android:orientation="vertical">
-	    <Button
-	        android:id="@+id/main_start_button"
-	        android:background="@drawable/blue_button"
-	        style="@style/ButtonText"
-	        android:text="@string/main_start_button" />
-	
-	    <Button
-	        android:id="@+id/main_more_games_button"
-	        android:background="@drawable/blue_button"
-	        style="@style/ButtonText"
-	        android:text="@string/main_more_games"/>
-	</LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/main_start_button"
+            style="@style/ButtonText"
+            android:background="@drawable/blue_button"
+            android:text="@string/main_start_button" />
+		<Button
+            android:id="@+id/main_review_button"
+            style="@style/ButtonText"
+            android:background="@drawable/blue_button"
+            android:text="@string/main_review_button" />
+        <Button
+            android:id="@+id/main_more_games_button"
+            style="@style/ButtonText"
+            android:background="@drawable/blue_button"
+            android:text="@string/main_more_games" />
+    </LinearLayout>
 
 </RelativeLayout>

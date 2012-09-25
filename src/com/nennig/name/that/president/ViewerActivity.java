@@ -2,19 +2,16 @@ package com.nennig.name.that.president;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DecimalFormat;
-import java.util.Random;
+import java.util.ArrayList;
 
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,36 +28,26 @@ import android.widget.Toast;
 public class ViewerActivity extends Activity {
 
 	private static final String TAG = "ViewerActivity";
-	private int assetIndex = 0;
-	private String[] assetPaths;
-	private int memorizedCount = 0;
-	private int wrongCount = 0;
+	private int assetIndex = 0; //Index of the current photo
+	private String[] assetPaths; //array of all the paths to the photos
+	private ArrayList<String> wrongAnswers; //List of all the wrong answers
+	private int correctCount = 0; //Count of number correct
+	private int wrongCount = 0; //Count of number incorrect
     private Bitmap bitmapImage;
-    private String _current_mem;
     private AssetManagement aManagement;
+    private boolean isCorrect = false; //Value that holds if the correct answer has been given
+    private boolean firstCorrect = true; //Value to show toast for first correct answer
+    private boolean firstWrong = true;	//Value to show toast for first incorrect answer
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);        
         setContentView(R.layout.activity_viewer);
-
-//        if(savedInstanceState !=null)
-//        {
-//        	_current_mem = savedInstanceState.getString(MainActivity.NAME_THAT_FOLDER);
-//            fManagement = new FileManagement(this, _current_mem);
-//            photoIndex = savedInstanceState.getInt("photoIndex");
-//            photoPaths = savedInstanceState.getStringArray("photoPaths");
-//        }
-//        else
-//        {
-//        	_current_mem =getIntent().getStringExtra(MainActivity.NAME_THAT_FOLDER);
-//	        fManagement = new FileManagement(this, getIntent().getExtras().getString(MainActivity.NAME_THAT_FOLDER));
-//	        
-//        	photoPaths = fManagement.getShuffledMemPhotos();
-//        }
         
-        aManagement = new AssetManagement(ViewerActivity.this);
+        aManagement = new AssetManagement(ViewerActivity.this);	//Initialize AssetManagement
+        wrongAnswers = new ArrayList<String>(); //Initialize the wrongAnswer array
         
+        //Get All photos and put them into AssetPaths
         try {
 			assetPaths = aManagement.getShuffledAssetPhotos();
 			for(String name:assetPaths){
@@ -69,24 +57,38 @@ public class ViewerActivity extends Activity {
 			Log.d(TAG, e.toString());
 		}
 
-        nextPhoto();
+        nextPhoto(); //Get the first photo
         
         final Button nextButton = (Button) findViewById(R.id.viewer_next_button);
         nextButton.setOnClickListener(new Button.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				//updates the counters
+				if(isCorrect)
+				{
+					correctCount++;
+				}
+				else
+				{
+					Log.d(TAG, "AssetIndex: " + assetIndex);
+					wrongAnswers.add(AssetManagement.getPhotoName(assetPaths[assetIndex]));
+					wrongCount++;
+				}
+ 				assetIndex++;
+ 				//Gets the next photo
+				nextPhoto();
+				//Sets the counters on the top of the screen
 				TextView memorized = (TextView) findViewById(R.id.viewer_memorized);
-				memorized.setText("" + memorizedCount);
+				memorized.setText("" + correctCount);
 				TextView wrong = (TextView) findViewById(R.id.viewer_wrong);
 				wrong.setText("" + wrongCount);
-				
 				Log.d(TAG,"Next Memorized. PhotoIndex=" + assetIndex);
-				nextPhoto();
 			}
         });
     }
     
 	private void nextPhoto(){
+		isCorrect = false;
 		if(assetIndex < assetPaths.length)
 		{
 			TextView counter = (TextView) findViewById(R.id.viewer_picture_counter);
@@ -108,7 +110,10 @@ public class ViewerActivity extends Activity {
 				photoView.setOnTouchListener(new OnTouchListener() {
 		 			@Override
 		 			public boolean onTouch(View arg0, MotionEvent arg1) {
-		 				photoNameInputAlert();
+		 				if(!isCorrect)
+		 				{
+		 					photoNameInputAlert();
+		 				}
 		 				return false;
 		 			}
 		         	
@@ -120,59 +125,103 @@ public class ViewerActivity extends Activity {
 		}
 		else
 		{
-			Toast.makeText(ViewerActivity.this, "Now more Photos", Toast.LENGTH_LONG).show();
+			Intent intent = new Intent(ViewerActivity.this, ScoreActivity.class);
+			intent.putExtra(MainActivity.NAME_THAT_CORRECT, correctCount);
+			intent.putExtra(MainActivity.NAME_THAT_WRONG, wrongCount);
+			intent.putExtra(MainActivity.NAME_THAT_WRONG_PHOTOS, wrongAnswers);
+			startActivity(intent);
+			finish();
 		}
 	}
 
 	 public void photoNameInputAlert(){
 	    	AlertDialog.Builder alert = new AlertDialog.Builder(this); 
-
+//TODO Make input look nicer
 	        alert.setTitle(getString(R.string.app_name)); 
-	        final TextView answerText = new TextView(this);
+	        final EditText answerText = new EditText(this);
 	        answerText.setHint("Answer Here");
+	        answerText.setTextSize(20);
+	   	        
+	        LinearLayout ll = new LinearLayout(this);
+	        ll.setPadding(2, 5, 2, 5);
+	        ll.addView(answerText);  
+	        alert.setView(ll);
 	        
-	        alert.setView(answerText);
+//	        alert.setView(findViewById(R.id.answer_box_layout));
+//	        final EditText answerText = (EditText) findViewById(R.id.answer_box);
+	        
 	        alert.setPositiveButton("Okay", new DialogInterface.OnClickListener() { 
 	            public void onClick(DialogInterface dialog, int whichButton) { 
 	            	Button nextButton = (Button) findViewById(R.id.viewer_next_button);
 	            	if(isCorrectAnswer(answerText.getText().toString())){
 	            		nextButton.setBackgroundResource(R.drawable.green_button);
-	            		nextButton.setText("Correct!");
-	            		memorizedCount++;
+	            		nextButton.setText("Continue");
+	            		TextView tv = (TextView) findViewById(R.id.viewer_photoName);
+		 				tv.setText(AssetManagement.getPhotoName(assetPaths[assetIndex]));
+	            		isCorrect = true;
+	            		if(firstCorrect){
+	            			Toast.makeText(ViewerActivity.this, "Correct!", Toast.LENGTH_SHORT).show();
+	            			firstCorrect = false;
+	            		}
 	            	}
 	            	else
 	            	{
 	            		nextButton.setBackgroundResource(R.drawable.red_button);
-	            		nextButton.setText("Not Quite!");
-	            		wrongCount++;
-	            	}
-	            	TextView tv = (TextView) findViewById(R.id.viewer_photoName);
-	 				tv.setText(AssetManagement.getPhotoName(assetPaths[assetIndex]));
+	            		nextButton.setText("Skip");
+	            		TextView tv = (TextView) findViewById(R.id.viewer_photoName);
+		 				tv.setText("");
+		 				isCorrect = false;
+		 				if(firstWrong){
+		 					Toast.makeText(ViewerActivity.this, "Not Quite! Touch the photo again for another try!", Toast.LENGTH_SHORT).show();
+		 					firstWrong = false;
+		 				}
+		 			}
 	 				LinearLayout ll = (LinearLayout) findViewById(R.id.viewer_controlsFrame);
 	 				ll.setVisibility(View.VISIBLE);
-	 				assetIndex++;
 	            } 
 	        }); 
-	        
 	        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() { 
 	            public void onClick(DialogInterface dialog, int whichButton) { 
 	              // Canceled. 
 	            } 
-	      }); 
-	        
+	      });   
 	      alert.show();
     }
 	 
+	 /**
+	  * This is the main decision module for this application. This breaks apart the answer string and then compares
+	  * it to the inputed answer
+	  * @param answer
+	  * @return
+	  */
 	 public boolean isCorrectAnswer(String answer){
-		 String actual = assetPaths[assetIndex];
+		//Converts the actual to lowercase
+		 String actual = assetPaths[assetIndex].toLowerCase();
+		//Gets rid of the extension
+		 actual = actual.substring(0, actual.length()-4);
+		 String[] split = actual.split(" ");
 		 
+		 //Converts the answer to lowercase
+		 answer = answer.toLowerCase();
 		 
-		 return true;
+		 for(int i = 0; i<split.length;i++){
+			 Log.d(TAG,"Index = " + i + " >> '" + split[i] + "'");
+		 }
+		 Log.d(TAG, "Actual: " + actual);
+		 Log.d(TAG,"Answer: " + answer);
+		 
+		 if(answer.equals(actual) ||
+				 answer.contains(actual) ||
+				 answer.endsWith(split[split.length-1]) ||
+				 answer.startsWith(split[0])){
+			 return true;
+		 }
+		 return false;
 	 }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_viewer, menu);
+        getMenuInflater().inflate(R.menu.general, menu);
         return true;
     }
     
@@ -181,32 +230,48 @@ public class ViewerActivity extends Activity {
     	Intent intent;
     	switch(item.getItemId()){
     	case R.id.menu_start_over:
-        	intent = new Intent(ViewerActivity.this,ViewerActivity.class);
-        	intent.putExtra(MainActivity.NAME_THAT_FOLDER, _current_mem);   
+        	intent = new Intent(ViewerActivity.this,ViewerActivity.class);  
         	startActivity(intent);
-        	Toast.makeText(this, "Mem Restarted. Good Luck!", Toast.LENGTH_LONG).show();
+        	Toast.makeText(this, "Good Luck!", Toast.LENGTH_LONG).show();
     		finish();
     		return true;
     	case R.id.menu_main_menu:
-        	intent = new Intent(ViewerActivity.this,MainActivity.class);
-        	intent.putExtra(MainActivity.NAME_THAT_FOLDER, _current_mem);       
+        	intent = new Intent(ViewerActivity.this,MainActivity.class);     
         	startActivity(intent);
     		finish();
     		return true;
     	case R.id.menu_about:
-    		//TODO Do About inflater
+    		aboutAlert(this);
     		return true;
     	case R.id.menu_rate_this:
-    		//TODO DO Rate This inflater
+    		String str ="https://play.google.com/store/apps/details?id=" + getString(R.string.app_package);
+    		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(str)));
     		return true;
     	default:
     		return super.onOptionsItemSelected(item);
     	}
     }
     
-    @Override
-    public void onSaveInstanceState(Bundle b){
-    	//ToDO Viewer onSavedInstanceState
-    	super.onSaveInstanceState(b);
+    public void aboutAlert(Context c){
+    	AlertDialog.Builder alert = new AlertDialog.Builder(c); 
+
+        alert.setTitle("About"); 
+        alert.setMessage("Copywrite @ 2012 Kevin Nennig");
+        
+        alert.setPositiveButton("View Site", new DialogInterface.OnClickListener() { 
+            public void onClick(DialogInterface dialog, int whichButton) { 
+            	String url = "https://sites.google.com/site/nennigk/personal-projects/photomem-app";
+            	Intent i = new Intent(Intent.ACTION_VIEW);
+            	i.setData(Uri.parse(url));
+            	ViewerActivity.this.startActivity(i);
+            } 
+        }); 
+        
+        alert.setNegativeButton("Close", new DialogInterface.OnClickListener() { 
+            public void onClick(DialogInterface dialog, int whichButton) { 
+              // Canceled. 
+            } 
+      }); 
+      alert.show();
     }
 }
