@@ -12,12 +12,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -28,6 +30,7 @@ import android.widget.Toast;
 public class ViewerActivity extends Activity {
 
 	private static final String TAG = "ViewerActivity";
+	private static final int VOICE_RECOGNITION_REQUEST_CODE = 12;
 	private int assetIndex = 0; //Index of the current photo
 	private String[] assetPaths; //array of all the paths to the photos
 	private ArrayList<String> wrongAnswers; //List of all the wrong answers
@@ -38,6 +41,8 @@ public class ViewerActivity extends Activity {
     private boolean isCorrect = false; //Value that holds if the correct answer has been given
     private boolean firstCorrect = true; //Value to show toast for first correct answer
     private boolean firstWrong = true;	//Value to show toast for first incorrect answer
+    EditText answerText;
+    
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -136,57 +141,93 @@ public class ViewerActivity extends Activity {
 
 	 public void photoNameInputAlert(){
 	    	AlertDialog.Builder alert = new AlertDialog.Builder(this); 
-//TODO Make input look nicer
+	    	//TODO Make input look nicer
 	        alert.setTitle(getString(R.string.app_name)); 
-	        final EditText answerText = new EditText(this);
+	        
+	        answerText = new EditText(this);
 	        answerText.setHint("Answer Here");
 	        answerText.setTextSize(20);
-	   	        
-	        LinearLayout ll = new LinearLayout(this);
-	        ll.setPadding(2, 5, 2, 5);
-	        ll.addView(answerText);  
-	        alert.setView(ll);
+	   	    answerText.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+	   	    answerText.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+//	   	    answerText.setGravity(10);
+//	   	    answerText.setPadding(10,10,10,10);
+	   	    
+//	   	    final Button speechButton = new Button(this);
+////	   	    speechButton.setBackground(null);
+//	   	    speechButton.setText("S");
+////	   	    speechButton.setPadding(10,10,10,10);
+//	   	    speechButton.setGravity(3);
+//	   	    
 	        
+//	        LinearLayout ll = new LinearLayout(this);
+//	        ll.setPadding(5,5,5,5);
+//	        ll.setMinimumWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+//	        ll.setOrientation(LinearLayout.HORIZONTAL);
+//	        ll.addView(answerText);  
+//	        ll.addView(speechButton);
+	        
+	        alert.setView(answerText);
 //	        alert.setView(findViewById(R.id.answer_box_layout));
 //	        final EditText answerText = (EditText) findViewById(R.id.answer_box);
 	        
 	        alert.setPositiveButton("Okay", new DialogInterface.OnClickListener() { 
 	            public void onClick(DialogInterface dialog, int whichButton) { 
-	            	Button nextButton = (Button) findViewById(R.id.viewer_next_button);
-	            	if(isCorrectAnswer(answerText.getText().toString())){
-	            		nextButton.setBackgroundResource(R.drawable.green_button);
-	            		nextButton.setText("Continue");
-	            		TextView tv = (TextView) findViewById(R.id.viewer_photoName);
-		 				tv.setText(AssetManagement.getPhotoName(assetPaths[assetIndex]));
-	            		isCorrect = true;
-	            		if(firstCorrect){
-	            			Toast.makeText(ViewerActivity.this, "Correct!", Toast.LENGTH_SHORT).show();
-	            			firstCorrect = false;
-	            		}
-	            	}
-	            	else
-	            	{
-	            		nextButton.setBackgroundResource(R.drawable.red_button);
-	            		nextButton.setText("Skip");
-	            		TextView tv = (TextView) findViewById(R.id.viewer_photoName);
-		 				tv.setText("");
-		 				isCorrect = false;
-		 				if(firstWrong){
-		 					Toast.makeText(ViewerActivity.this, "Not Quite! Touch the photo again for another try!", Toast.LENGTH_SHORT).show();
-		 					firstWrong = false;
-		 				}
-		 			}
-	 				LinearLayout ll = (LinearLayout) findViewById(R.id.viewer_controlsFrame);
-	 				ll.setVisibility(View.VISIBLE);
+	            	checkAnswer(answerText.getText().toString());
 	            } 
 	        }); 
 	        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() { 
 	            public void onClick(DialogInterface dialog, int whichButton) { 
 	              // Canceled. 
 	            } 
-	      });   
+	      }); 
+	        alert.setNeutralButton("Say It!", new DialogInterface.OnClickListener() { 
+	            public void onClick(DialogInterface dialog, int whichButton) { 
+	              startVoiceRecognitionActivity(); 
+	            } 
+	      });
+	       
 	      alert.show();
     }
+	 
+	 public void checkAnswer(String str){
+		 Button nextButton = (Button) findViewById(R.id.viewer_next_button);
+     	if(isCorrectAnswer(str)){
+     		nextButton.setBackgroundResource(R.drawable.green_button);
+     		nextButton.setText("Continue");
+     		TextView tv = (TextView) findViewById(R.id.viewer_photoName);
+				tv.setText(AssetManagement.getPhotoName(assetPaths[assetIndex]));
+     		isCorrect = true;
+     		if(firstCorrect){
+     			Toast.makeText(ViewerActivity.this, "Correct!", Toast.LENGTH_SHORT).show();
+     			firstCorrect = false;
+     		}
+     	}
+     	else
+     	{
+     		nextButton.setBackgroundResource(R.drawable.red_button);
+     		nextButton.setText("Skip");
+     		TextView tv = (TextView) findViewById(R.id.viewer_photoName);
+				tv.setText("");
+				isCorrect = false;
+				if(firstWrong){
+					Toast.makeText(ViewerActivity.this, "Not Quite! Touch the photo again for another try!", Toast.LENGTH_SHORT).show();
+					firstWrong = false;
+				}
+			}
+			LinearLayout ll = (LinearLayout) findViewById(R.id.viewer_controlsFrame);
+			ll.setVisibility(View.VISIBLE);
+	 }
+	 
+     /**
+      * Fire an intent to start the speech recognition activity.
+      */
+     private void startVoiceRecognitionActivity() {
+         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speech recognition demo");
+         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+     }
 	 
 	 /**
 	  * This is the main decision module for this application. This breaks apart the answer string and then compares
@@ -219,6 +260,25 @@ public class ViewerActivity extends Activity {
 		 return false;
 	 }
     
+     /**
+      * Handle the results from the recognition activity.
+      */
+     @Override
+     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
+             // Fill the list view with the strings the recognizer thought it could have heard
+             ArrayList<String> matches = data.getStringArrayListExtra(
+                     RecognizerIntent.EXTRA_RESULTS);
+             String sAnswer = "";
+             for(int i = 0; i<matches.size();i++)
+            	 sAnswer = sAnswer + matches.get(i) + " ";
+             Log.d(TAG, "Spoken Answer: "+sAnswer);
+             checkAnswer(sAnswer);
+         }
+
+         super.onActivityResult(requestCode, resultCode, data);
+
+     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.general, menu);
