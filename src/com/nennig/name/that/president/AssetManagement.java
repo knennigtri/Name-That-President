@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -19,10 +19,6 @@ public class AssetManagement {
 	private static String[] acceptedExtensions = {".jpg",".png"};
 	public static final String ROOT_FOLDER = Environment.getExternalStorageDirectory().toString();
 	
-	private int _numAssets;
-	private Activity _activity;
-	private Object[] _photoPaths;
-	
     public static String getPhotoName(String name){
     	
     	for(int i = 0; i<acceptedExtensions.length;i++){
@@ -33,58 +29,62 @@ public class AssetManagement {
     	}   	
     	return name;
     }
-    
-	public AssetManagement(Activity a){
-		_activity = a;
-		_numAssets = 0;
-	}
-	public AssetManagement(Activity a, ArrayList<String> paths){
-		_activity = a;
-		_numAssets = 0;
-		_photoPaths = paths.toArray();
-		Log.d(TAG, "AssetManagement Created with Asset List");
-		for(int i = 0; i<_photoPaths.length; i++)
-			Log.d(TAG,"Path: " + _photoPaths[i]);
-	}
 	
-	 public int getNumberOfAssets() throws IOException{
-    	if(_numAssets == 0)
-    		return getAssetPhotos().length;
-    	else
-    		return _numAssets;
+	 public static int getNumberOfAssets(Context c) throws IOException{
+    		return getAssetPhotos(c).length;
 	 }
 	
-    private Object[] getAssetPhotos() throws IOException{
-    	if(_photoPaths == null)
+	 private static Object[] getAssetPhotos(Context c) throws IOException{
+		 return getAssetPhotos(c,"");
+	 }
+	 
+    private static Object[] getAssetPhotos(Context c, String wPaths) throws IOException{
+    	String[] assets;
+    	if(wPaths == "")
     	{
-	    	String[] arr = _activity.getAssets().list("");
-	    	ArrayList<String> al = new ArrayList<String>();
-	    	for(int i = 0; i<arr.length; i++)
-	    	{
-	    		for(int j = 0; j<acceptedExtensions.length;j++)
-	    		{
-	    			if(arr[i].contains(acceptedExtensions[j]))
-	    			{
-	    				al.add(arr[i]);
-	    				j = acceptedExtensions.length;
-	    			}	
-	    		}
-	    	}
-	    	String[] assets = new String[al.size()];
-	    	
+    		String[] arr = c.getAssets().list("");
+        	ArrayList<String> tempAL = new ArrayList<String>();
+        	for(int i = 0; i<arr.length; i++)
+        	{
+        		for(int j = 0; j<acceptedExtensions.length;j++)
+        		{
+        			if(arr[i].contains(acceptedExtensions[j]))
+        			{
+        				tempAL.add(arr[i]);
+        				j = acceptedExtensions.length;
+        			}	
+        		}
+        	}
+        	assets = new String[tempAL.size()];
 	    	for(int i = 0 ;i< assets.length;i++){
-	    		assets[i] = al.get(i);
+	    		assets[i] = tempAL.get(i);
+	    		Log.d(TAG, "ALL AssetPath: " + assets[i]);
 	    	}
-	    	
-	    	Log.d(TAG, "ArrayList finished.");
-	    	return assets;
     	}
     	else
-    		return _photoPaths;
+    	{
+    		ArrayList<String> wrongPaths = new ArrayList<String>();
+    		String[] split = wPaths.split(",");
+    		for(int i = 0; i < split.length; i++)
+    			wrongPaths.add(split[i]);
+    		
+    		assets = new String[wrongPaths.size()];
+    		for(int i = 0 ;i< assets.length;i++){
+	    		assets[i] = wrongPaths.get(i);
+	    		Log.d(TAG, "WRONG AssetPath: " + assets[i]);
+	    	}
+    	}
+    	
+    	Log.d(TAG, "Asset ArrayList finished.");
+    	return assets;
     }
     
-    public String[] getShuffledAssetPhotos() throws IOException{
-    	Object[] oArr = getAssetPhotos();
+    public static String[] getShuffledAssetPhotos(Context c) throws IOException{
+    	return getShuffledAssetPhotos(c,"");
+    }
+    
+    public static String[] getShuffledAssetPhotos(Context c, String wrongPaths) throws IOException{
+    	Object[] oArr = getAssetPhotos(c,wrongPaths);
     	String[] photos = Arrays.copyOf(oArr,oArr.length, String[].class);
     	shuffleArray((String[]) photos);
     	Log.d(TAG, "Finished Shuffling");
@@ -117,12 +117,12 @@ public class AssetManagement {
         a[change] = helper;
       }
     
-    public Bitmap drawNextPhoto(InputStream iStream, int reqWidth, int reqHeight) {
+    public static Bitmap drawNextPhoto(InputStream iStream, int reqWidth, int reqHeight) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-    //    BitmapFactory.decodeStream(iStream, null, options);
+        BitmapFactory.decodeStream(iStream, null, options);
 
         // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);

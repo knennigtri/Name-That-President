@@ -1,19 +1,15 @@
 package com.nennig.name.that.president;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -110,7 +106,12 @@ public class ScoreActivity extends Activity {
     	if(_numCorrect > _bAttempt)
     		e.putInt(MainActivity.NAME_THAT_MOST_CORRECT, _numCorrect);
     	
-    	e.putInt(MainActivity.NAME_THAT_NUM_TRIES, _numAttempts+1);    	
+    	String wrongAnserString = "";
+    	for(int i = 0; i < _wrongAnswers.size(); i++)
+    		wrongAnserString = wrongAnserString + _wrongAnswers.get(i) + ",";
+    	
+    	e.putInt(MainActivity.NAME_THAT_NUM_TRIES, _numAttempts+1);  
+    	e.putString(MainActivity.NAME_THAT_WRONG_PHOTOS, wrongAnserString);
     	e.commit();
     }
     

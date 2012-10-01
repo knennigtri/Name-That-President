@@ -18,5 +18,6 @@
     <string name="score_back_button">Return to Start</string>
     <string name="score_review_button">Review Wrong Answers</string>
     <string name="main_review_button">Review</string>
+    <string name="viewer_answer_button">Show Me</string>
 
 </resources>

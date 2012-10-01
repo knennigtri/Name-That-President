@@ -2,13 +2,13 @@ package com.nennig.name.that.president;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,12 +20,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class PracticeActivity extends Activity {
     	private static final String TAG = "PracticeActivity";
+    	public static final String LOAD_WRONG_ANSWERS = "name.that.load.wrong.answers";
     	private int assetIndex = 0; //Index of the current photo
     	private String[] assetPaths; //array of all the paths to the photos
-        private AssetManagement aManagement;
         private Bitmap bitmapImage;
         
     	@Override
@@ -33,26 +34,29 @@ public class PracticeActivity extends Activity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_practice);
 
-     //       ArrayList<String> wrongPhotoPaths = getIntent().getExtras().getStringArrayList(MainActivity.NAME_THAT_WRONG_PHOTOS);
+            boolean loadWrongAnswers = getIntent().getBooleanExtra(LOAD_WRONG_ANSWERS, true);
+            String wrongPhotoPaths = "";
+            if(loadWrongAnswers)
+            {
+	            SharedPreferences settings = getSharedPreferences(MainActivity.NAME_THAT_PREFS,MODE_PRIVATE);
+	            wrongPhotoPaths = settings.getString(MainActivity.NAME_THAT_WRONG_PHOTOS,"");
+	            if(wrongPhotoPaths == "")
+	            	Toast.makeText(this, "No wrong answers to review", Toast.LENGTH_SHORT).show();
+            }
+
             
             //If there is a wrong photo list, then load that into the AssetManager
-            //TODO GetWrongPaths working in Practice Mode
-//            if(wrongPhotoPaths != null)
-//            {
-//            	for(int i = 0;i<wrongPhotoPaths.size(); i++)
-//    				Log.d(TAG, "Wrong: " + wrongPhotoPaths.get(i));
-//            	aManagement = new AssetManagement(PracticeActivity.this,wrongPhotoPaths);
-//            }
-//            else
-            	aManagement = new AssetManagement(PracticeActivity.this);
-            
-            //Get All photos and put them into AssetPaths
-            try {
-    			assetPaths = aManagement.getShuffledAssetPhotos();
-    			for(String name:assetPaths){
-    			     System.out.println(name);    
-    			}
-    		} catch (IOException e) {
+            try{
+	            if(wrongPhotoPaths != "")
+	            {
+					Log.d(TAG, "Wrong: " + wrongPhotoPaths);
+			    	assetPaths = AssetManagement.getShuffledAssetPhotos(this,wrongPhotoPaths);
+	            }
+	            else
+	            {         	
+		    		assetPaths = AssetManagement.getShuffledAssetPhotos(this);
+	            }
+            }catch (IOException e) {
     			Log.d(TAG, e.toString());
     		}
             
@@ -83,7 +87,7 @@ public class PracticeActivity extends Activity {
  				InputStream iStream = null;
  				try {
 	 				iStream = PracticeActivity.this.getAssets().open(assetPaths[assetIndex]);
-	 				bitmapImage = aManagement.drawNextPhoto(iStream, 500, 500);	
+	 				bitmapImage = AssetManagement.drawNextPhoto(iStream, 500, 500);	
 	 				photoView.setImageBitmap(bitmapImage);
  				} catch (IOException e) {
  					Log.d(TAG, "Exception Was Thrown.");

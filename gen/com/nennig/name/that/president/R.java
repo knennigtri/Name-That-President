@@ -42,40 +42,47 @@ public final class R {
         public static final int red_button=0x7f020007;
     }
     public static final class id {
-        public static final int answer_box=0x7f09001c;
-        public static final int answer_box_layout=0x7f09001b;
-        public static final int main_attempts=0x7f090004;
-        public static final int main_best_attempt=0x7f090003;
-        public static final int main_more_games_button=0x7f090007;
+        public static final int answer_box=0x7f090023;
+        public static final int answer_box_layout=0x7f090022;
+        public static final int main_attempts=0x7f09000b;
+        public static final int main_best_attempt=0x7f09000a;
+        public static final int main_buttonFrame=0x7f090005;
+        public static final int main_imageView=0x7f090004;
+        public static final int main_more_games_button=0x7f090008;
         public static final int main_nameThat_name=0x7f090002;
-        public static final int main_review_button=0x7f090006;
-        public static final int main_start_button=0x7f090005;
-        public static final int main_text_ll=0x7f090000;
+        public static final int main_photoFrame=0x7f090003;
+        public static final int main_review_button=0x7f090007;
+        public static final int main_start_button=0x7f090006;
+        public static final int main_stats_text=0x7f090009;
+        public static final int main_title_text=0x7f090000;
         public static final int main_welcomeText=0x7f090001;
-        public static final int menu_about=0x7f09001e;
-        public static final int menu_main_menu=0x7f090021;
-        public static final int menu_rate_this=0x7f09001d;
-        public static final int menu_reset=0x7f09001f;
-        public static final int menu_start_over=0x7f090020;
-        public static final int practice_controlsFrame=0x7f09000a;
-        public static final int practice_imageView=0x7f090009;
-        public static final int practice_nextButton=0x7f09000c;
-        public static final int practice_photoFrame=0x7f090008;
-        public static final int practice_photoName=0x7f09000b;
-        public static final int score_back_button=0x7f090010;
-        public static final int score_review_button=0x7f09000f;
-        public static final int score_text=0x7f09000e;
-        public static final int score_text_layout=0x7f09000d;
-        public static final int viewer_controlsFrame=0x7f090018;
-        public static final int viewer_detailFrame=0x7f090013;
-        public static final int viewer_imageView=0x7f090012;
-        public static final int viewer_memorized=0x7f090017;
-        public static final int viewer_next_button=0x7f09001a;
-        public static final int viewer_photoFrame=0x7f090011;
-        public static final int viewer_photoName=0x7f090019;
-        public static final int viewer_picture_counter=0x7f090015;
-        public static final int viewer_statsFrame=0x7f090014;
-        public static final int viewer_wrong=0x7f090016;
+        public static final int menu_about=0x7f090025;
+        public static final int menu_main_menu=0x7f090028;
+        public static final int menu_rate_this=0x7f090024;
+        public static final int menu_reset=0x7f090026;
+        public static final int menu_start_over=0x7f090027;
+        public static final int practice_controlsFrame=0x7f09000e;
+        public static final int practice_imageView=0x7f09000d;
+        public static final int practice_nextButton=0x7f090010;
+        public static final int practice_photoFrame=0x7f09000c;
+        public static final int practice_photoName=0x7f09000f;
+        public static final int score_back_button=0x7f090014;
+        public static final int score_review_button=0x7f090013;
+        public static final int score_text=0x7f090012;
+        public static final int score_text_layout=0x7f090011;
+        public static final int viewer_answerFrame=0x7f09001d;
+        public static final int viewer_answer_button=0x7f090020;
+        public static final int viewer_buttonFrame=0x7f09001f;
+        public static final int viewer_controlsFrame=0x7f09001c;
+        public static final int viewer_detailFrame=0x7f090017;
+        public static final int viewer_imageView=0x7f090016;
+        public static final int viewer_memorized=0x7f09001a;
+        public static final int viewer_next_button=0x7f090021;
+        public static final int viewer_photoFrame=0x7f090015;
+        public static final int viewer_photoName=0x7f09001e;
+        public static final int viewer_picture_counter=0x7f090019;
+        public static final int viewer_statsFrame=0x7f090018;
+        public static final int viewer_wrong=0x7f09001b;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -107,6 +114,7 @@ public final class R {
         public static final int score_review_button=0x7f060010;
         public static final int title_activity_score=0x7f06000e;
         public static final int title_activity_viewer=0x7f060007;
+        public static final int viewer_answer_button=0x7f060012;
     }
     public static final class style {
         public static final int AppTheme=0x7f070000;
