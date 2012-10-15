@@ -216,6 +216,7 @@ public class ViewerActivity extends Activity {
      			Toast.makeText(ViewerActivity.this, "Correct!", Toast.LENGTH_SHORT).show();
      			firstCorrect = false;
      		}
+     		Log.d(TAG, "Correct");
      	}
      	else
      	{
@@ -232,6 +233,7 @@ public class ViewerActivity extends Activity {
 			}
 			LinearLayout ll = (LinearLayout) findViewById(R.id.viewer_controlsFrame);
 			ll.setVisibility(View.VISIBLE);
+			Log.d(TAG, "Wrong");
 	 }
 
 	 /**
@@ -246,22 +248,31 @@ public class ViewerActivity extends Activity {
 		 String actual = assetPaths[assetIndex].toLowerCase();
 		//Gets rid of the extension
 		 actual = actual.substring(0, actual.length()-4);
-		 String[] split = actual.split(" ");
+		 String[] actualSplit = actual.split(" ");
 		 
 		 //Converts the answer to lowercase
 		 answer = answer.toLowerCase();
+		 if(answer.length() < 4) return false;
 		 
-		 for(int i = 0; i<split.length;i++){
-			 Log.d(TAG,"Index = " + i + " >> '" + split[i] + "'");
+		 String[] answerSplit = answer.split(" ");
+		 
+		 for(int i = 0; i<actualSplit.length;i++){
+			 Log.d(TAG,"Index = " + i + " >> '" + actualSplit[i] + "'");
 		 }
+		 
 		 Log.d(TAG, "Actual: '" + actual + "'");
 		 Log.d(TAG,"Answer: '" + answer + "'");
 		 
-		 if(answer.equals(actual) ||
-				 answer.contains(actual) ||
-				 answer.endsWith(split[split.length-1]) ||
-				 answer.startsWith(split[0])){
-			 return true;
+		 if(answer.equals(actual) || answer.contains(actual)) return true;
+		 Log.d(TAG, "Does not equal Actual or contain Actual.");
+		 
+		 for(int i = 0; i<answerSplit.length;i++){
+			 if(actual.endsWith(answerSplit[i]) ||
+					 actual.startsWith(answerSplit[i]))
+			 {
+				 Log.d(TAG, "Actual starts or ends with: " + answerSplit[i]);
+				 return true;
+			 }
 		 }
 		 return false;
 	 }
