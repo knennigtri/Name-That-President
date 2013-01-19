@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import android.app.Activity;
+import com.nennig.constants.AppConstants;
+
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -28,16 +29,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ViewerActivity extends Activity {
+public class ViewerActivity extends BaseActivity {
 
 	private static final String TAG = "ViewerActivity";
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 12;
 	private static final String VIEWER_FIRST_USE = "name.that.viewer.first.use";
-	private int assetIndex = 0; //Index of the current photo
-	private String[] assetPaths; //array of all the paths to the photos
-	private ArrayList<String> wrongAnswers; //List of all the wrong answers
-	private int correctCount = 0; //Count of number correct
-	private int wrongCount = 0; //Count of number incorrect
+	
     private Bitmap bitmapImage;
     private boolean isCorrect = false; //Value that holds if the correct answer has been given
     private boolean giveUp = false;
@@ -46,33 +43,53 @@ public class ViewerActivity extends Activity {
     EditText answerText;
     private boolean _firstUse;
     
+    /*
+     * These values correspond with game state
+     */
+    private int assetIndex = 0; //Index of the current photo
+	private String[] assetPaths; //array of all the paths to the photos
+	private ArrayList<String> wrongAnswers = new ArrayList<String>(); //List of all the wrong answers
+	private int correctCount = 0; //Count of number correct
+	private int wrongCount = 0; //Count of number incorrect
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);        
         setContentView(R.layout.activity_viewer);
         
-        SharedPreferences settings = getSharedPreferences(MainActivity.NAME_THAT_PREFS,MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
         _firstUse = settings.getBoolean(VIEWER_FIRST_USE, true);
-        wrongAnswers = new ArrayList<String>(); //Initialize the wrongAnswer array
         
-        //Get All photos and put them into AssetPaths
-        try {
-			assetPaths = AssetManagement.getShuffledAssetPhotos(this);
-			for(String name:assetPaths){
-			     System.out.println(name);    
-			}
-		} catch (IOException e) {
-			Log.d(TAG, e.toString());
-		}
-
+        //This checks if the user is requesting a saved game
+        if(getIntent().getBooleanExtra(AppConstants.NAME_THAT_CONTINUE, false))
+        {
+        	loadGameState();
+        }
+        
+        if((assetIndex == 0) || (assetPaths.length == 0))
+        {
+        	 //Get All photos and put them into AssetPaths
+            try {
+    			assetPaths = AssetManagement.getShuffledAssetPhotos(this);
+    			for(String name:assetPaths){
+    			     System.out.println(name);    
+    			}
+    			correctCount = 0;
+    			wrongCount = 0;
+    			assetIndex = 0;
+    			wrongAnswers.clear();
+    		} catch (IOException e) {
+    			Log.d(TAG, e.toString());
+    		}
+        }
+        
         nextPhoto(); //Get the first photo
 
+        final Button nextButton = (Button) findViewById(R.id.viewer_next_button);
         if(_firstUse){
         	touchInfoAlert();
         }
 
-        final Button nextButton = (Button) findViewById(R.id.viewer_next_button);
         nextButton.setOnClickListener(new Button.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -90,11 +107,6 @@ public class ViewerActivity extends Activity {
  				assetIndex++;
  				//Gets the next photo
 				nextPhoto();
-				//Sets the counters on the top of the screen
-				TextView memorized = (TextView) findViewById(R.id.viewer_memorized);
-				memorized.setText("" + correctCount);
-				TextView wrong = (TextView) findViewById(R.id.viewer_wrong);
-				wrong.setText("" + wrongCount);
 				Log.d(TAG,"Next Memorized. PhotoIndex=" + assetIndex);
 				
 				if(_firstUse){
@@ -119,8 +131,13 @@ public class ViewerActivity extends Activity {
 		giveUp = false;
 		if(assetIndex < assetPaths.length)
 		{
+			//Sets the current game stats
 			TextView counter = (TextView) findViewById(R.id.viewer_picture_counter);
 			counter.setText((assetIndex + 1) + "/" + assetPaths.length);
+			TextView memorized = (TextView) findViewById(R.id.viewer_memorized);
+			memorized.setText("" + correctCount);
+			TextView wrong = (TextView) findViewById(R.id.viewer_wrong);
+			wrong.setText("" + wrongCount);
 			
 			LinearLayout ll = (LinearLayout) findViewById(R.id.viewer_controlsFrame);
 			ll.setVisibility(View.INVISIBLE);
@@ -153,9 +170,9 @@ public class ViewerActivity extends Activity {
 		else
 		{
 			Intent intent = new Intent(ViewerActivity.this, ScoreActivity.class);
-			intent.putExtra(MainActivity.NAME_THAT_CORRECT, correctCount);
-			intent.putExtra(MainActivity.NAME_THAT_WRONG, wrongCount);
-			intent.putExtra(MainActivity.NAME_THAT_WRONG_PHOTOS, wrongAnswers);
+			intent.putExtra(AppConstants.NAME_THAT_CORRECT, correctCount);
+			intent.putExtra(AppConstants.NAME_THAT_WRONG, wrongCount);
+			intent.putExtra(AppConstants.NAME_THAT_WRONG_PHOTOS, wrongAnswers);
 			startActivity(intent);
 			finish();
 		}
@@ -296,7 +313,7 @@ public class ViewerActivity extends Activity {
 	        
 	        _firstUse = false;
 	        
-	        SharedPreferences settings = getSharedPreferences(MainActivity.NAME_THAT_PREFS,MODE_PRIVATE);
+	        SharedPreferences settings = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
 	    	SharedPreferences.Editor e = settings.edit();
 	    	e.putBoolean(VIEWER_FIRST_USE, _firstUse);
 	    	e.commit();
@@ -307,6 +324,28 @@ public class ViewerActivity extends Activity {
 	            } 
 	        }); 
 	        alert.show();
+	 }
+	 
+	 //Allows the user to save their game state if they exit the app
+	 private void saveGameState(){
+		 SharedPreferences settings = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
+		 SharedPreferences.Editor e = settings.edit();
+		 e.putInt(AppConstants.NAME_THAT_CORRECT, correctCount);
+		 e.putInt(AppConstants.NAME_THAT_WRONG, wrongCount);
+		 e.putString(AppConstants.NAME_THAT_WRONG_PHOTOS, createPrefSaveString(wrongAnswers));
+		 e.putString(AppConstants.NAME_THAT_SAVED_GAME, createPrefSaveString(assetPaths)); 
+		 e.putInt(AppConstants.NAME_THAT_CUR_INDEX, assetIndex);
+		 e.commit();
+	 }
+	 
+	 //Allows user to start where they left off if they choose to
+	 private void loadGameState(){
+		 SharedPreferences sp = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
+		 correctCount = sp.getInt(AppConstants.NAME_THAT_CORRECT, 0);
+		 wrongCount = sp.getInt(AppConstants.NAME_THAT_WRONG, 0);
+		 wrongAnswers = unpackPrefSaveString(sp.getString(AppConstants.NAME_THAT_WRONG_PHOTOS, ""));
+		 assetPaths = unpackPrefSaveStringToArray(sp.getString(AppConstants.NAME_THAT_SAVED_GAME, ""));
+		 assetIndex = sp.getInt(AppConstants.NAME_THAT_CUR_INDEX, 0);
 	 }
 	 
      /**
@@ -361,26 +400,15 @@ public class ViewerActivity extends Activity {
     	}
     }
     
-    public void aboutAlert(Context c){
-    	AlertDialog.Builder alert = new AlertDialog.Builder(c); 
-
-        alert.setTitle("About"); 
-        alert.setMessage("Copywrite @ 2012 Kevin Nennig");
-        
-        alert.setPositiveButton("View Site", new DialogInterface.OnClickListener() { 
-            public void onClick(DialogInterface dialog, int whichButton) { 
-            	String url = "https://sites.google.com/site/nennigk/personal-projects/photomem-app";
-            	Intent i = new Intent(Intent.ACTION_VIEW);
-            	i.setData(Uri.parse(url));
-            	ViewerActivity.this.startActivity(i);
-            } 
-        }); 
-        
-        alert.setNegativeButton("Close", new DialogInterface.OnClickListener() { 
-            public void onClick(DialogInterface dialog, int whichButton) { 
-              // Canceled. 
-            } 
-      }); 
-      alert.show();
+    @Override
+    public void onStop(){
+    	super.onStop();
+    	saveGameState();
+    }
+    
+    @Override
+    public void onBackPressed(){
+    	super.onBackPressed();
+    	saveGameState();
     }
 }

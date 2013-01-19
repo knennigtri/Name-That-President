@@ -16,13 +16,13 @@ import android.util.Log;
 @SuppressLint("NewApi")
 public class AssetManagement {
 	private static final String TAG = "AssetManagement";
-	private static String[] acceptedExtensions = {".jpg",".png"};
+	private final static String[] acceptedExtensions = {".jpg",".png"};
 	public static final String ROOT_FOLDER = Environment.getExternalStorageDirectory().toString();
 	
     public static String getPhotoName(String name){
     	
-    	for(int i = 0; i<acceptedExtensions.length;i++){
-    		if(name.contains(acceptedExtensions[i]))
+    	for(String ext : acceptedExtensions){
+    		if(name.contains(ext))
     		{
     			return name.substring(0, name.length()-4);
     		}
@@ -34,23 +34,28 @@ public class AssetManagement {
     		return getAssetPhotos(c).length;
 	 }
 	
-	 private static Object[] getAssetPhotos(Context c) throws IOException{
-		 return getAssetPhotos(c,"");
+	 private static String[] getAssetPhotos(Context c) throws IOException{
+		 return getAssetPhotos(c,new ArrayList<String>());
 	 }
 	 
-    private static Object[] getAssetPhotos(Context c, String wPaths) throws IOException{
+    private static String[] getAssetPhotos(Context c, ArrayList<String> arrList) throws IOException{
     	String[] assets;
-    	if(wPaths == "")
+    	if(!arrList.isEmpty())
     	{
+    		assets = arrList.toArray(new String[arrList.size()]);
+    	}
+    	else
+    	{
+    		//If this method is used and the arraylist is still empty
     		String[] arr = c.getAssets().list("");
         	ArrayList<String> tempAL = new ArrayList<String>();
-        	for(int i = 0; i<arr.length; i++)
+        	for(String name : arr)
         	{
         		for(int j = 0; j<acceptedExtensions.length;j++)
         		{
-        			if(arr[i].contains(acceptedExtensions[j]))
+        			if(name.contains(acceptedExtensions[j]))
         			{
-        				tempAL.add(arr[i]);
+        				tempAL.add(name);
         				j = acceptedExtensions.length;
         			}	
         		}
@@ -61,30 +66,17 @@ public class AssetManagement {
 	    		Log.d(TAG, "ALL AssetPath: " + assets[i]);
 	    	}
     	}
-    	else
-    	{
-    		ArrayList<String> wrongPaths = new ArrayList<String>();
-    		String[] split = wPaths.split(",");
-    		for(int i = 0; i < split.length; i++)
-    			wrongPaths.add(split[i]);
-    		
-    		assets = new String[wrongPaths.size()];
-    		for(int i = 0 ;i< assets.length;i++){
-	    		assets[i] = wrongPaths.get(i);
-	    		Log.d(TAG, "WRONG AssetPath: " + assets[i]);
-	    	}
-    	}
-    	
+
     	Log.d(TAG, "Asset ArrayList finished.");
     	return assets;
     }
     
     public static String[] getShuffledAssetPhotos(Context c) throws IOException{
-    	return getShuffledAssetPhotos(c,"");
+    	return getShuffledAssetPhotos(c, new ArrayList<String>());
     }
     
-    public static String[] getShuffledAssetPhotos(Context c, String wrongPaths) throws IOException{
-    	Object[] oArr = getAssetPhotos(c,wrongPaths);
+    public static String[] getShuffledAssetPhotos(Context c, ArrayList<String> pathList) throws IOException{
+    	String[] oArr = getAssetPhotos(c,pathList);
     	String[] photos = Arrays.copyOf(oArr,oArr.length, String[].class);
     	shuffleArray((String[]) photos);
     	Log.d(TAG, "Finished Shuffling");
@@ -147,4 +139,9 @@ public class AssetManagement {
 	    }
 	    return inSampleSize;
     }
+
+	public static ArrayList<String> getPhotosLeft(int assetIndex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -3,10 +3,8 @@ package com.nennig.name.that.president;
 import java.io.IOException;
 import java.io.InputStream;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import com.nennig.constants.AppConstants;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -22,9 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PracticeActivity extends Activity {
+public class PracticeActivity extends BaseActivity {
     	private static final String TAG = "PracticeActivity";
-    	public static final String LOAD_WRONG_ANSWERS = "name.that.load.wrong.answers";
     	private int assetIndex = 0; //Index of the current photo
     	private String[] assetPaths; //array of all the paths to the photos
         private Bitmap bitmapImage;
@@ -34,12 +31,12 @@ public class PracticeActivity extends Activity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_practice);
 
-            boolean loadWrongAnswers = getIntent().getBooleanExtra(LOAD_WRONG_ANSWERS, true);
+            boolean loadWrongAnswers = getIntent().getBooleanExtra(AppConstants.LOAD_WRONG_ANSWERS, true);
             String wrongPhotoPaths = "";
             if(loadWrongAnswers)
             {
-	            SharedPreferences settings = getSharedPreferences(MainActivity.NAME_THAT_PREFS,MODE_PRIVATE);
-	            wrongPhotoPaths = settings.getString(MainActivity.NAME_THAT_WRONG_PHOTOS,"");
+	            SharedPreferences settings = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
+	            wrongPhotoPaths = settings.getString(AppConstants.NAME_THAT_WRONG_PHOTOS,"");
 	            if(wrongPhotoPaths == "")
 	            	Toast.makeText(this, "No wrong answers to review", Toast.LENGTH_SHORT).show();
             }
@@ -47,10 +44,10 @@ public class PracticeActivity extends Activity {
             
             //If there is a wrong photo list, then load that into the AssetManager
             try{
-	            if(wrongPhotoPaths != "")
+	            if(!"".equals(wrongPhotoPaths))
 	            {
 					Log.d(TAG, "Wrong: " + wrongPhotoPaths);
-			    	assetPaths = AssetManagement.getShuffledAssetPhotos(this,wrongPhotoPaths);
+			    	assetPaths = AssetManagement.getShuffledAssetPhotos(this,unpackPrefSaveString(wrongPhotoPaths));
 	            }
 	            else
 	            {         	
@@ -134,27 +131,5 @@ public class PracticeActivity extends Activity {
         	default:
         		return super.onOptionsItemSelected(item);
         	}
-        }
-        public void aboutAlert(Context c){
-        	AlertDialog.Builder alert = new AlertDialog.Builder(c); 
-
-            alert.setTitle("About"); 
-            alert.setMessage("Copywrite @ 2012 Kevin Nennig");
-            
-            alert.setPositiveButton("View Site", new DialogInterface.OnClickListener() { 
-                public void onClick(DialogInterface dialog, int whichButton) { 
-                	String url = "https://sites.google.com/site/nennigk/personal-projects/photomem-app";
-                	Intent i = new Intent(Intent.ACTION_VIEW);
-                	i.setData(Uri.parse(url));
-                	PracticeActivity.this.startActivity(i);
-                } 
-            }); 
-            
-            alert.setNegativeButton("Close", new DialogInterface.OnClickListener() { 
-                public void onClick(DialogInterface dialog, int whichButton) { 
-                  // Canceled. 
-                } 
-          }); 
-          alert.show();
         }
     }
