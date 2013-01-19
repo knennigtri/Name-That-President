@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import com.nennig.constants.AppConstants;
+import com.nennig.constants.*;
+import com.nennig.name.that.*;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -57,11 +58,11 @@ public class ViewerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);        
         setContentView(R.layout.activity_viewer);
         
-        SharedPreferences settings = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences(AppPrefsConstants.NAME_THAT_PREFS,MODE_PRIVATE);
         _firstUse = settings.getBoolean(VIEWER_FIRST_USE, true);
         
         //This checks if the user is requesting a saved game
-        if(getIntent().getBooleanExtra(AppConstants.NAME_THAT_CONTINUE, false))
+        if(getIntent().getBooleanExtra(AppPrefsConstants.NAME_THAT_CONTINUE, false))
         {
         	loadGameState();
         }
@@ -170,9 +171,9 @@ public class ViewerActivity extends BaseActivity {
 		else
 		{
 			Intent intent = new Intent(ViewerActivity.this, ScoreActivity.class);
-			intent.putExtra(AppConstants.NAME_THAT_CORRECT, correctCount);
-			intent.putExtra(AppConstants.NAME_THAT_WRONG, wrongCount);
-			intent.putExtra(AppConstants.NAME_THAT_WRONG_PHOTOS, wrongAnswers);
+			intent.putExtra(AppPrefsConstants.NAME_THAT_CORRECT, correctCount);
+			intent.putExtra(AppPrefsConstants.NAME_THAT_WRONG, wrongCount);
+			intent.putExtra(AppPrefsConstants.NAME_THAT_WRONG_PHOTOS, wrongAnswers);
 			startActivity(intent);
 			finish();
 		}
@@ -313,7 +314,7 @@ public class ViewerActivity extends BaseActivity {
 	        
 	        _firstUse = false;
 	        
-	        SharedPreferences settings = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
+	        SharedPreferences settings = getSharedPreferences(AppPrefsConstants.NAME_THAT_PREFS,MODE_PRIVATE);
 	    	SharedPreferences.Editor e = settings.edit();
 	    	e.putBoolean(VIEWER_FIRST_USE, _firstUse);
 	    	e.commit();
@@ -328,24 +329,24 @@ public class ViewerActivity extends BaseActivity {
 	 
 	 //Allows the user to save their game state if they exit the app
 	 private void saveGameState(){
-		 SharedPreferences settings = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
+		 SharedPreferences settings = getSharedPreferences(AppPrefsConstants.NAME_THAT_PREFS,MODE_PRIVATE);
 		 SharedPreferences.Editor e = settings.edit();
-		 e.putInt(AppConstants.NAME_THAT_CORRECT, correctCount);
-		 e.putInt(AppConstants.NAME_THAT_WRONG, wrongCount);
-		 e.putString(AppConstants.NAME_THAT_WRONG_PHOTOS, createPrefSaveString(wrongAnswers));
-		 e.putString(AppConstants.NAME_THAT_SAVED_GAME, createPrefSaveString(assetPaths)); 
-		 e.putInt(AppConstants.NAME_THAT_CUR_INDEX, assetIndex);
+		 e.putInt(AppPrefsConstants.NAME_THAT_CORRECT, correctCount);
+		 e.putInt(AppPrefsConstants.NAME_THAT_WRONG, wrongCount);
+		 e.putString(AppPrefsConstants.NAME_THAT_WRONG_PHOTOS, createPrefSaveString(wrongAnswers));
+		 e.putString(AppPrefsConstants.NAME_THAT_SAVED_GAME, createPrefSaveString(assetPaths)); 
+		 e.putInt(AppPrefsConstants.NAME_THAT_CUR_INDEX, assetIndex);
 		 e.commit();
 	 }
 	 
 	 //Allows user to start where they left off if they choose to
 	 private void loadGameState(){
-		 SharedPreferences sp = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
-		 correctCount = sp.getInt(AppConstants.NAME_THAT_CORRECT, 0);
-		 wrongCount = sp.getInt(AppConstants.NAME_THAT_WRONG, 0);
-		 wrongAnswers = unpackPrefSaveString(sp.getString(AppConstants.NAME_THAT_WRONG_PHOTOS, ""));
-		 assetPaths = unpackPrefSaveStringToArray(sp.getString(AppConstants.NAME_THAT_SAVED_GAME, ""));
-		 assetIndex = sp.getInt(AppConstants.NAME_THAT_CUR_INDEX, 0);
+		 SharedPreferences sp = getSharedPreferences(AppPrefsConstants.NAME_THAT_PREFS,MODE_PRIVATE);
+		 correctCount = sp.getInt(AppPrefsConstants.NAME_THAT_CORRECT, 0);
+		 wrongCount = sp.getInt(AppPrefsConstants.NAME_THAT_WRONG, 0);
+		 wrongAnswers = unpackPrefSaveString(sp.getString(AppPrefsConstants.NAME_THAT_WRONG_PHOTOS, ""));
+		 assetPaths = unpackPrefSaveStringToArray(sp.getString(AppPrefsConstants.NAME_THAT_SAVED_GAME, ""));
+		 assetIndex = sp.getInt(AppPrefsConstants.NAME_THAT_CUR_INDEX, 0);
 	 }
 	 
      /**

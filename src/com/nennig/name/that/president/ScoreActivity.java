@@ -2,7 +2,8 @@ package com.nennig.name.that.president;
 
 import java.util.ArrayList;
 
-import com.nennig.constants.AppConstants;
+import com.nennig.constants.*;
+import com.nennig.name.that.*;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,14 +32,14 @@ public class ScoreActivity extends BaseActivity {
         setContentView(R.layout.activity_score);
         
         //Get values from current Attempt
-        _numCorrect = getIntent().getIntExtra(AppConstants.NAME_THAT_CORRECT, 0);
-        _numWrong = getIntent().getIntExtra(AppConstants.NAME_THAT_WRONG, 0);
-        _wrongAnswers = getIntent().getExtras().getStringArrayList(AppConstants.NAME_THAT_WRONG_PHOTOS);
+        _numCorrect = getIntent().getIntExtra(AppPrefsConstants.NAME_THAT_CORRECT, 0);
+        _numWrong = getIntent().getIntExtra(AppPrefsConstants.NAME_THAT_WRONG, 0);
+        _wrongAnswers = getIntent().getExtras().getStringArrayList(AppPrefsConstants.NAME_THAT_WRONG_PHOTOS);
         
         //Get Saved Values
-        SharedPreferences settings = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
-        _bAttempt = settings.getInt(AppConstants.NAME_THAT_MOST_CORRECT, 0);
-    	_numAttempts = settings.getInt(AppConstants.NAME_THAT_NUM_TRIES, 0);
+        SharedPreferences settings = getSharedPreferences(AppPrefsConstants.NAME_THAT_PREFS,MODE_PRIVATE);
+        _bAttempt = settings.getInt(AppPrefsConstants.NAME_THAT_MOST_CORRECT, 0);
+    	_numAttempts = settings.getInt(AppPrefsConstants.NAME_THAT_NUM_TRIES, 0);
         
         TextView results = (TextView) findViewById(R.id.score_text);
         results.setText(getResultsText());
@@ -65,7 +66,7 @@ public class ScoreActivity extends BaseActivity {
 					Intent intent = new Intent(ScoreActivity.this, PracticeActivity.class);
 					for(int i = 0;i<_wrongAnswers.size(); i++)
 						Log.d(TAG, "Wrong: " + _wrongAnswers.get(i));
-					intent.putExtra(AppConstants.NAME_THAT_WRONG_PHOTOS, _wrongAnswers);
+					intent.putExtra(AppPrefsConstants.NAME_THAT_WRONG_PHOTOS, _wrongAnswers);
 					startActivity(intent);
 				}
 				else
@@ -106,9 +107,9 @@ public class ScoreActivity extends BaseActivity {
      */
     public void savePreferences(SharedPreferences.Editor e){
     	if(_numCorrect > _bAttempt)
-    		e.putInt(AppConstants.NAME_THAT_MOST_CORRECT, _numCorrect);
-	    	e.putInt(AppConstants.NAME_THAT_NUM_TRIES, _numAttempts+1);  
-	    	e.putString(AppConstants.NAME_THAT_WRONG_PHOTOS, createPrefSaveString(_wrongAnswers));
+    		e.putInt(AppPrefsConstants.NAME_THAT_MOST_CORRECT, _numCorrect);
+	    	e.putInt(AppPrefsConstants.NAME_THAT_NUM_TRIES, _numAttempts+1);  
+	    	e.putString(AppPrefsConstants.NAME_THAT_WRONG_PHOTOS, createPrefSaveString(_wrongAnswers));
 	    	e.commit();
     }
     /**
@@ -116,10 +117,10 @@ public class ScoreActivity extends BaseActivity {
      * @param e
      */
     private void resetGameState(SharedPreferences.Editor e){
-		 e.putInt(AppConstants.NAME_THAT_CORRECT, 0);
-		 e.putInt(AppConstants.NAME_THAT_WRONG, 0);
-		 e.putString(AppConstants.NAME_THAT_SAVED_GAME, ""); 
-		 e.putInt(AppConstants.NAME_THAT_CUR_INDEX, 0);
+		 e.putInt(AppPrefsConstants.NAME_THAT_CORRECT, 0);
+		 e.putInt(AppPrefsConstants.NAME_THAT_WRONG, 0);
+		 e.putString(AppPrefsConstants.NAME_THAT_SAVED_GAME, ""); 
+		 e.putInt(AppPrefsConstants.NAME_THAT_CUR_INDEX, 0);
 		 e.commit();
     }
     

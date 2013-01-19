@@ -1,12 +1,12 @@
 package com.nennig.name.that.president;
 
 import com.nennig.constants.*;
+import com.nennig.name.that.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +25,7 @@ public class MainActivity extends BaseActivity {
 	private static final String TAG = "MainActivity";
 	
 	private static final String MAIN_FIRST_USE = "name.that.main.first.use";
+	private static final String DEFAULT_MAIN_IMAGE = "Abraham Lincoln.jpg";
 	
 	private int _most_correct;
 	private int _total_assets;
@@ -39,13 +40,13 @@ public class MainActivity extends BaseActivity {
         //Rate this app
         AppManager.app_launched(this);
         
-        SharedPreferences settings = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences(AppPrefsConstants.NAME_THAT_PREFS,MODE_PRIVATE);
         _firstUse = settings.getBoolean(MAIN_FIRST_USE, true);
 
         if(savedInstanceState != null)
         {
-	        _most_correct = savedInstanceState.getInt(AppConstants.NAME_THAT_MOST_CORRECT);
-	        _numTries = savedInstanceState.getInt(AppConstants.NAME_THAT_NUM_TRIES);
+	        _most_correct = savedInstanceState.getInt(AppPrefsConstants.NAME_THAT_MOST_CORRECT);
+	        _numTries = savedInstanceState.getInt(AppPrefsConstants.NAME_THAT_NUM_TRIES);
         }
         else
         {
@@ -79,7 +80,7 @@ public class MainActivity extends BaseActivity {
 				else
 				{
 					 _firstUse = false;
-			        SharedPreferences settings = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
+			        SharedPreferences settings = getSharedPreferences(AppPrefsConstants.NAME_THAT_PREFS,MODE_PRIVATE);
 			    	SharedPreferences.Editor e = settings.edit();
 			    	e.putBoolean(MAIN_FIRST_USE, _firstUse);
 			    	e.commit();
@@ -115,7 +116,7 @@ public class MainActivity extends BaseActivity {
         alert.setPositiveButton("Continue", new DialogInterface.OnClickListener() { 
             public void onClick(DialogInterface dialog, int whichButton) { 
             	Intent i = new Intent(MainActivity.this, ViewerActivity.class);
-            	i.putExtra(AppConstants.NAME_THAT_CONTINUE, true);
+            	i.putExtra(AppPrefsConstants.NAME_THAT_CONTINUE, true);
             	startActivity(i);
             } 
         }); 
@@ -141,7 +142,7 @@ public class MainActivity extends BaseActivity {
 		
 		InputStream iStream = null;
 		try {
-			iStream = MainActivity.this.getAssets().open(AppConstants.DEFAULT_MAIN_IMAGE);
+			iStream = MainActivity.this.getAssets().open(DEFAULT_MAIN_IMAGE);
 			
 			bitmapImage = AssetManagement.drawNextPhoto(iStream, 140,140);
 			photoView.setImageBitmap(bitmapImage);
@@ -160,7 +161,7 @@ public class MainActivity extends BaseActivity {
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() { 
             public void onClick(DialogInterface dialog, int whichButton) { 
             	Intent i = new Intent(MainActivity.this, PracticeActivity.class);
-            	i.putExtra(AppConstants.LOAD_WRONG_ANSWERS, true);
+            	i.putExtra(AppPrefsConstants.LOAD_WRONG_ANSWERS, true);
             	startActivity(i);
             } 
         }); 
@@ -168,7 +169,7 @@ public class MainActivity extends BaseActivity {
         alert.setNegativeButton("No", new DialogInterface.OnClickListener() { 
             public void onClick(DialogInterface dialog, int whichButton) { 
             	Intent i = new Intent(MainActivity.this, PracticeActivity.class);
-            	i.putExtra(AppConstants.LOAD_WRONG_ANSWERS, false);
+            	i.putExtra(AppPrefsConstants.LOAD_WRONG_ANSWERS, false);
             	startActivity(i);
             } 
       }); 
@@ -184,9 +185,9 @@ public class MainActivity extends BaseActivity {
     }
     
    private void loadPreferences(){
-	   SharedPreferences settings = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
-       _most_correct = settings.getInt(AppConstants.NAME_THAT_MOST_CORRECT, 0);
-       _numTries = settings.getInt(AppConstants.NAME_THAT_NUM_TRIES, 0);
+	   SharedPreferences settings = getSharedPreferences(AppPrefsConstants.NAME_THAT_PREFS,MODE_PRIVATE);
+       _most_correct = settings.getInt(AppPrefsConstants.NAME_THAT_MOST_CORRECT, 0);
+       _numTries = settings.getInt(AppPrefsConstants.NAME_THAT_NUM_TRIES, 0);
    }
     
     protected void onResume()
@@ -217,11 +218,11 @@ public class MainActivity extends BaseActivity {
 	        alert.setTitle("Reset All Scores?");
 	        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() { 
 	            public void onClick(DialogInterface dialog, int whichButton) { 
-		    		SharedPreferences settings = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
+		    		SharedPreferences settings = getSharedPreferences(AppPrefsConstants.NAME_THAT_PREFS,MODE_PRIVATE);
 		        	SharedPreferences.Editor e = settings.edit();
-		        	e.putInt(AppConstants.NAME_THAT_MOST_CORRECT, 0);
-		        	e.putInt(AppConstants.NAME_THAT_NUM_TRIES, 0);
-		        	e.putString(AppConstants.NAME_THAT_WRONG_PHOTOS, "");
+		        	e.putInt(AppPrefsConstants.NAME_THAT_MOST_CORRECT, 0);
+		        	e.putInt(AppPrefsConstants.NAME_THAT_NUM_TRIES, 0);
+		        	e.putString(AppPrefsConstants.NAME_THAT_WRONG_PHOTOS, "");
 		        	e.commit();
 		        	recreate();
 	            }

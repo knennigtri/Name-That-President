@@ -3,7 +3,8 @@ package com.nennig.name.that.president;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.nennig.constants.AppConstants;
+import com.nennig.constants.*;
+import com.nennig.name.that.*;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,12 +32,12 @@ public class PracticeActivity extends BaseActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_practice);
 
-            boolean loadWrongAnswers = getIntent().getBooleanExtra(AppConstants.LOAD_WRONG_ANSWERS, true);
+            boolean loadWrongAnswers = getIntent().getBooleanExtra(AppPrefsConstants.LOAD_WRONG_ANSWERS, true);
             String wrongPhotoPaths = "";
             if(loadWrongAnswers)
             {
-	            SharedPreferences settings = getSharedPreferences(AppConstants.NAME_THAT_PREFS,MODE_PRIVATE);
-	            wrongPhotoPaths = settings.getString(AppConstants.NAME_THAT_WRONG_PHOTOS,"");
+	            SharedPreferences settings = getSharedPreferences(AppPrefsConstants.NAME_THAT_PREFS,MODE_PRIVATE);
+	            wrongPhotoPaths = settings.getString(AppPrefsConstants.NAME_THAT_WRONG_PHOTOS,"");
 	            if(wrongPhotoPaths == "")
 	            	Toast.makeText(this, "No wrong answers to review", Toast.LENGTH_SHORT).show();
             }

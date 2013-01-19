@@ -1,11 +1,9 @@
-package com.nennig.constants;
+package com.nennig.name.that;
 
 import java.util.ArrayList;
 
-public class AppConstants {
-	//Other Constants
-	public static final String DEFAULT_MAIN_IMAGE = "Abraham Lincoln.jpg";
-	
+public class AppPrefsConstants {
+
 	/*
 	 * Preferences Constants
 	 */

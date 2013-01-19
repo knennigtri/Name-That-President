@@ -8,7 +8,7 @@
 
 package com.nennig.constants;
 
-import com.nennig.name.that.president.BaseActivity;
+import com.nennig.name.that.*;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -91,7 +91,7 @@ public class AppManager {
     }   
     
     public static void showVersionUpdateDialog(Context c,long version){
-        String lastLogEntry = AppConstants.CHANGE_LOG.get(AppConstants.CHANGE_LOG.size()-1);
+        String lastLogEntry = AppPrefsConstants.CHANGE_LOG.get(AppPrefsConstants.CHANGE_LOG.size()-1);
         AlertDialog.Builder alert = new AlertDialog.Builder(c); 
 
         alert.setTitle(APP_TITLE + " Version " + version);
