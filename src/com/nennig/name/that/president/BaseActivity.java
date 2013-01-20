@@ -2,14 +2,15 @@ package com.nennig.name.that.president;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.nennig.constants.*;
+import com.nennig.constants.AppConfig;
+import com.nennig.constants.AppManager;
+import com.nennig.constants.DevConstants;
+
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 public class BaseActivity extends Activity {
 	
@@ -18,51 +19,27 @@ public class BaseActivity extends Activity {
         super.onCreate(savedInstanceState);
     }
     
-    public void aboutAlert(Context c){
-    	AlertDialog.Builder alert = new AlertDialog.Builder(c); 
-
-        alert.setTitle("About"); 
-        alert.setMessage("Copyright @ 2012 Kevin Nennig");
-        
-        alert.setPositiveButton("View Site", new DialogInterface.OnClickListener() { 
-            public void onClick(DialogInterface dialog, int whichButton) { 
-            	String url = DevConstants.MY_WEBSITE;
-            	Intent i = new Intent(Intent.ACTION_VIEW);
-            	i.setData(Uri.parse(url));
-            	BaseActivity.this.startActivity(i);
-            } 
-        }); 
-        
-        alert.setNegativeButton("Close", new DialogInterface.OnClickListener() { 
-            public void onClick(DialogInterface dialog, int whichButton) { 
-              // Canceled. 
-            } 
-      }); 
-      alert.show();
-    }
-    
     //Two methods to get the data into string form to save the data
     private static String _delim = ",";
-    public String createPrefSaveString(String[] strArr){
+    public static String createPrefSaveString(String[] strArr){
     	ArrayList<String> list = new ArrayList<String>(Arrays.asList(strArr));
     	return createPrefSaveString(list);
     }
     
-    public String createPrefSaveString(ArrayList<String> strArr){
+    public static String createPrefSaveString(ArrayList<String> strArr){
     	String prefSaveStr = "";
     	for(String str : strArr)
     		prefSaveStr = prefSaveStr + str + _delim;
-    	
     	return prefSaveStr;
     }
     
     //Two methods to unpack a saved string for the game state
-    public String[] unpackPrefSaveStringToArray(String str){
+    public static String[] unpackPrefSaveStringToArray(String str){
     	ArrayList<String> list = new ArrayList<String>(unpackPrefSaveString(str));
     	return list.toArray(new String[list.size()]);
     }
     
-    public ArrayList<String> unpackPrefSaveString(String str){
+    public static ArrayList<String> unpackPrefSaveString(String str){
     	ArrayList<String> strArr = new ArrayList<String>();
 		String[] split = str.split(_delim);
 		for(int i = 0; i < split.length; i++)
@@ -70,5 +47,31 @@ public class BaseActivity extends Activity {
 			strArr.add(split[i]);
 		}
 		return strArr;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	Intent intent;
+    	switch(item.getItemId()){
+    	case R.id.menu_start_over:
+        	intent = new Intent(this,ViewerActivity.class);  
+        	startActivity(intent);
+    		finish();
+    		return true;
+    	case R.id.menu_main_menu:
+        	intent = new Intent(this,MainActivity.class);     
+        	startActivity(intent);
+    		finish();
+    		return true;
+    	case R.id.menu_about:
+    		AppManager.aboutAlert(this);
+    		return true;
+    	case R.id.menu_rate_this:
+    		String str = DevConstants.GOOGLE_PLAY + AppConfig.APP_PNAME;
+    		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(str)));
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
     }
 }

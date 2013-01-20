@@ -1,6 +1,5 @@
 package com.nennig.name.that;
 
-import java.util.ArrayList;
 
 public class AppPrefsConstants {
 
@@ -26,12 +25,6 @@ public class AppPrefsConstants {
 	//decision constants
 	public static final String NAME_THAT_CONTINUE = "name.that.start.continue";
 	public static final String LOAD_WRONG_ANSWERS = "name.that.load.wrong.answers";
-
-	public static final ArrayList<String> CHANGE_LOG = new ArrayList<String>();
-	static{
-		CHANGE_LOG.add("Update (1/19/13): This app now supports save games. " +
-				"If you decide not to finish your current game, you can finish it later!");
-	}
 }
 
 

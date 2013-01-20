@@ -1,3 +1,10 @@
+/**
+ * This class manages all of the asset files that the Name That Series works with. It can get a file by name, create
+ * a list of asset files according to the accepted extensions. This will also mix up the list of assets as well as
+ * create a bitmap for the required requested size for the app.
+ */
+
+
 package com.nennig.name.that.president;
 
 import java.io.IOException;
@@ -24,7 +31,7 @@ public class AssetManagement {
     	for(String ext : acceptedExtensions){
     		if(name.contains(ext))
     		{
-    			return name.substring(0, name.length()-4);
+    			return name.substring(0, name.length() - ext.length());
     		}
     	}   	
     	return name;

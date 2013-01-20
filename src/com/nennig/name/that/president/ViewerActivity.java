@@ -375,33 +375,6 @@ public class ViewerActivity extends BaseActivity {
     }
     
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	Intent intent;
-    	switch(item.getItemId()){
-    	case R.id.menu_start_over:
-        	intent = new Intent(ViewerActivity.this,ViewerActivity.class);  
-        	startActivity(intent);
-        	Toast.makeText(this, "Good Luck!", Toast.LENGTH_LONG).show();
-    		finish();
-    		return true;
-    	case R.id.menu_main_menu:
-        	intent = new Intent(ViewerActivity.this,MainActivity.class);     
-        	startActivity(intent);
-    		finish();
-    		return true;
-    	case R.id.menu_about:
-    		aboutAlert(this);
-    		return true;
-    	case R.id.menu_rate_this:
-    		String str ="https://play.google.com/store/apps/details?id=" + getString(R.string.app_package);
-    		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(str)));
-    		return true;
-    	default:
-    		return super.onOptionsItemSelected(item);
-    	}
-    }
-    
-    @Override
     public void onStop(){
     	super.onStop();
     	saveGameState();

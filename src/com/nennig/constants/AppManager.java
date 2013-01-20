@@ -1,14 +1,16 @@
 /**
  * This code was modified from:
  * http://www.androidsnippets.com/prompt-engaged-users-to-rate-your-app-in-the-android-market-appirater
- * 
  * Much thanks to android snippets!
+ * 
+ * This class was created to be used my all of my apps so that I can implement an easy changelog and rating system for 
+ * my apps. It uses the class AppConstants to get the unique variables about this class.
  */
 
 
 package com.nennig.constants;
 
-import com.nennig.name.that.*;
+import com.nennig.name.that.president.BaseActivity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,22 +29,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class AppManager {
-    private final static String APP_TITLE = "Name that President";
-    private final static String APP_PNAME = "com.nennig.name.that.president";
+    
     
     //Preferences Holder
-    private final static String PREV_VERSION_CODE = "nennig.current.version";
-    private final static String DONT_SHOW_AGAIN = "nennig.dontshowagain";
-    private final static String LAUNCH_COUNT = "nennig.launchcount";
-    private final static String DATE_FIRST_LAUNCHED = "nennig.datefirstlaunched";
+    private final static String PREV_VERSION_CODE = AppConfig.APP_PNAME + ".current.version";
+    private final static String DONT_SHOW_AGAIN = AppConfig.APP_PNAME + ".dontshowagain";
+    private final static String LAUNCH_COUNT = AppConfig.APP_PNAME + ".launchcount";
+    private final static String DATE_FIRST_LAUNCHED = AppConfig.APP_PNAME + ".datefirstlaunched";
     
     private final static int DAYS_UNTIL_PROMPT = 3;
     private final static int LAUNCHES_UNTIL_PROMPT = 7;
-	private static String TAG = "nennig.AppManager";
+	private static String TAG = AppConfig.APP_PNAME + ".AppManager";
 
-    
+    /**
+     * Method to initialize the AppManager. Checks for amount of times used and current version
+     * @param c
+     */
     public static void app_launched(Context c) {
-        SharedPreferences prefs = c.getSharedPreferences("apprater", 0);
+        SharedPreferences prefs = c.getSharedPreferences(TAG, 0);
         if (prefs.getBoolean(DONT_SHOW_AGAIN, false)) { return ; }
         
         SharedPreferences.Editor editor = prefs.edit();
@@ -90,11 +94,16 @@ public class AppManager {
         editor.commit();
     }   
     
+    /**
+     * Inflater to show updates to the app.
+     * @param c
+     * @param version
+     */
     public static void showVersionUpdateDialog(Context c,long version){
-        String lastLogEntry = AppPrefsConstants.CHANGE_LOG.get(AppPrefsConstants.CHANGE_LOG.size()-1);
+        String lastLogEntry = AppConfig.CHANGE_LOG.get(AppConfig.CHANGE_LOG.size()-1);
         AlertDialog.Builder alert = new AlertDialog.Builder(c); 
 
-        alert.setTitle(APP_TITLE + " Version " + version);
+        alert.setTitle(AppConfig.APP_TITLE + " Version " + version);
         alert.setMessage(lastLogEntry);
         
         alert.setPositiveButton("Okay", new DialogInterface.OnClickListener() { 
@@ -105,24 +114,29 @@ public class AppManager {
       alert.show();
     }
     
+    /**
+     * Inflater to ask the user if they would like to rate this app 
+     * @param c
+     * @param editor
+     */
     public static void showRateDialog(final Context c, final SharedPreferences.Editor editor) {
         final Dialog dialog = new Dialog(c);
-        dialog.setTitle("Rate " + APP_TITLE);
+        dialog.setTitle("Rate " + AppConfig.APP_TITLE);
 
         LinearLayout ll = new LinearLayout(c);
         ll.setOrientation(LinearLayout.VERTICAL);
         
         TextView tv = new TextView(c);
-        tv.setText("If you enjoy using " + APP_TITLE + ", please take a moment to rate it. Thanks for your support!");
+        tv.setText("If you enjoy using " + AppConfig.APP_TITLE + ", please take a moment to rate it. Thanks for your support!");
         tv.setWidth(240);
         tv.setPadding(4, 0, 4, 10);
         ll.addView(tv);
         
         Button b1 = new Button(c);
-        b1.setText("Rate " + APP_TITLE);
+        b1.setText("Rate " + AppConfig.APP_TITLE);
         b1.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                c.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PNAME)));
+                c.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppConfig.APP_PNAME)));
                 dialog.dismiss();
             }
         });        
@@ -152,5 +166,32 @@ public class AppManager {
 
         dialog.setContentView(ll);        
         dialog.show();        
+    }
+    
+    /**
+     * This is a simple about inflater to show information about me and my work.
+     * @param c
+     */
+    public static void aboutAlert(final Context c){
+    	AlertDialog.Builder alert = new AlertDialog.Builder(c); 
+
+        alert.setTitle("About"); 
+        alert.setMessage(DevConstants.ABOUT_MESSAGE);
+        
+        alert.setPositiveButton("View Site", new DialogInterface.OnClickListener() { 
+            public void onClick(DialogInterface dialog, int whichButton) { 
+            	String url = DevConstants.MY_WEBSITE;
+            	Intent i = new Intent(Intent.ACTION_VIEW);
+            	i.setData(Uri.parse(url));
+            	c.startActivity(i);
+            } 
+        }); 
+        
+        alert.setNegativeButton("Close", new DialogInterface.OnClickListener() { 
+            public void onClick(DialogInterface dialog, int whichButton) { 
+              // Canceled. 
+            } 
+      }); 
+      alert.show();
     }
 }

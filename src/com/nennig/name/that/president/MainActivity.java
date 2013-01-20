@@ -207,7 +207,7 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch(item.getItemId()){
     	case R.id.menu_about:
-    		aboutAlert(this);
+    		AppManager.aboutAlert(this);
     		return true;
     	case R.id.menu_rate_this:
     		String str = DevConstants.GOOGLE_PLAY + getString(R.string.app_package);

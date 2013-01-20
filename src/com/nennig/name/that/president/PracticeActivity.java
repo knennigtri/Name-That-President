@@ -107,30 +107,4 @@ public class PracticeActivity extends BaseActivity {
             getMenuInflater().inflate(R.menu.general, menu);
             return true;
         }
-        
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-        	Intent intent;
-        	switch(item.getItemId()){
-        	case R.id.menu_start_over:
-            	intent = new Intent(PracticeActivity.this,ViewerActivity.class);  
-            	startActivity(intent);
-        		finish();
-        		return true;
-        	case R.id.menu_main_menu:
-            	intent = new Intent(PracticeActivity.this,MainActivity.class);     
-            	startActivity(intent);
-        		finish();
-        		return true;
-        	case R.id.menu_about:
-        		aboutAlert(this);
-        		return true;
-        	case R.id.menu_rate_this:
-        		String str ="https://play.google.com/store/apps/details?id=" + getString(R.string.app_package);
-        		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(str)));
-        		return true;
-        	default:
-        		return super.onOptionsItemSelected(item);
-        	}
-        }
     }
