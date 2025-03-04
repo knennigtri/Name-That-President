@@ -17,7 +17,8 @@ import com.nennig.name.that.president.domain.repository.Score
 
 @Composable
 fun MainScreen(
-    onStartGame: () -> Unit,
+    onStartEndlessMode: () -> Unit,
+    onStartChallengeMode: () -> Unit,
     onReviewMode: () -> Unit,
     onMoreGames: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
@@ -58,7 +59,8 @@ fun MainScreen(
 
             // Buttons
             ButtonSection(
-                onStartGame = onStartGame,
+                onStartEndlessMode = onStartEndlessMode,
+                onStartChallengeMode = onStartChallengeMode,
                 onReviewMode = onReviewMode,
                 onMoreGames = onMoreGames
             )
@@ -85,7 +87,8 @@ private fun ScoreSection(score: Score?) {
 
 @Composable
 private fun ButtonSection(
-    onStartGame: () -> Unit,
+    onStartEndlessMode: () -> Unit,
+    onStartChallengeMode: () -> Unit,
     onReviewMode: () -> Unit,
     onMoreGames: () -> Unit
 ) {
@@ -95,10 +98,17 @@ private fun ButtonSection(
         modifier = Modifier.padding(16.dp)
     ) {
         Button(
-            onClick = onStartGame,
+            onClick = onStartEndlessMode,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Start Game")
+            Text("Start Endless Mode")
+        }
+
+        Button(
+            onClick = onStartChallengeMode,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Start Challenge Mode")
         }
 
         Button(

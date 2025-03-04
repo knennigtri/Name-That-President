@@ -14,14 +14,39 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.nennig.name.that.president.R
 import com.nennig.name.that.president.domain.model.President
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+
+@Composable
+fun ModeSelectionScreen(onModeSelected: (Boolean) -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Select Game Mode", style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { onModeSelected(false) }) {
+            Text("Endless Mode")
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = { onModeSelected(true) }) {
+            Text("Challenge Mode")
+        }
+    }
+}
 
 @Composable
 fun GameScreen(
     onGameComplete: () -> Unit,
-    viewModel: GameViewModel = hiltViewModel()
+    viewModel: GameViewModel = hiltViewModel(),
+    isChallengeMode: Boolean = false
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    var showHint by remember { mutableStateOf(false) }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -65,9 +90,29 @@ fun GameScreen(
                     // Answer Section
                     AnswerSection(
                         currentPresident = state.currentPresident,
-                        onAnswerSelected = viewModel::checkAnswer,
+                        onAnswerSelected = { president ->
+                            viewModel.checkAnswer(president)
+                            if (isChallengeMode && viewModel.wrongAnswersCount >= 5) {
+                                onGameComplete()
+                            }
+                        },
                         answerOptions = state.answerOptions
                     )
+
+                    // Hint Button
+                    Button(onClick = { showHint = !showHint }) {
+                        Text("Show Hint")
+                    }
+
+                    // Hint Information
+                    if (showHint) {
+                        Text(
+                            text = "Years in Office: ${state.currentPresident.term}\nParty: ${state.currentPresident.party}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
 
                     // Score
                     Text(
@@ -157,4 +202,24 @@ sealed class GameUiState {
         val totalPresidents: Int
     ) : GameUiState()
     data class Error(val message: String) : GameUiState()
-} 
+}
+
+@Composable
+fun AppNavigation() {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = "mode_selection") {
+        composable("mode_selection") {
+            ModeSelectionScreen { isChallengeMode ->
+                navController.navigate("game_screen/$isChallengeMode")
+            }
+        }
+        composable("game_screen/{isChallengeMode}") { backStackEntry ->
+            val isChallengeMode = backStackEntry.arguments?.getString("isChallengeMode")?.toBoolean() ?: false
+            GameScreen(
+                onGameComplete = { navController.popBackStack() },
+                isChallengeMode = isChallengeMode
+            )
+        }
+    }
+}

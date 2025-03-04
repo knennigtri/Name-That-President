@@ -22,6 +22,8 @@ class GameViewModel @Inject constructor(
     private var presidents: List<President> = emptyList()
     private var currentIndex = 0
     private var correctAnswers = 0
+    var wrongAnswersCount = 0
+        private set
 
     init {
         loadPresidents()
@@ -79,11 +81,19 @@ class GameViewModel @Inject constructor(
         if (selectedPresident.id == currentPresident.id) {
             correctAnswers++
         } else {
+            wrongAnswersCount++
             viewModelScope.launch {
                 repository.saveWrongAnswer(currentPresident)
             }
         }
         currentIndex++
         updateGameState()
+    }
+
+    fun resetGame() {
+        wrongAnswersCount = 0
+        currentIndex = 0
+        correctAnswers = 0
+        loadPresidents()
     }
 } 

@@ -13,9 +13,4 @@ interface PresidentRepository {
     fun getScore(): Flow<Score>
     suspend fun updateScore(correct: Int, total: Int)
     suspend fun resetScore()
-}
-
-data class Score(
-    val mostCorrect: Int = 0,
-    val totalAttempts: Int = 0
-) 
+} 

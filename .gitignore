@@ -1,5 +1,23 @@
+# Android Studio
+.idea/
 *.iml
-.gradle
+*.ipr
+*.iws
+
+# Build
+/build/
+*/build/
+
+# Gradle
+.gradle/
+build/
+
+# Local configuration
+local.properties
+
+# Other
+.DS_Store
+
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries

@@ -20,9 +20,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            PresidentTheme {
-                PresidentApp()
-            }
+            PresidentApp()
         }
     }
 }
@@ -34,20 +32,23 @@ fun PresidentApp() {
     NavHost(navController = navController, startDestination = "main") {
         composable("main") {
             MainScreen(
-                onStartGame = { navController.navigate("game") },
+                onStartEndlessMode = { navController.navigate("game/endless") },
+                onStartChallengeMode = { navController.navigate("game/challenge") },
                 onReviewMode = { navController.navigate("review") },
                 onMoreGames = {
                     val intent = Intent(
                         Intent.ACTION_VIEW,
                         Uri.parse("https://play.google.com/store/search?q=Name+That&c=apps&price=1")
                     )
-                    // TODO: Launch intent
+//                    context.startActivity(intent)
                 }
             )
         }
-        composable("game") {
+        composable("game/{mode}") { backStackEntry ->
+            val mode = backStackEntry.arguments?.getString("mode") ?: "endless"
             GameScreen(
-                onGameComplete = { navController.navigate("main") }
+                onGameComplete = { navController.navigate("main") },
+                isChallengeMode = mode == "challenge"
             )
         }
         composable("review") {

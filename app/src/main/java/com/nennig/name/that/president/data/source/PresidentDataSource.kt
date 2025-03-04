@@ -48,6 +48,8 @@ object PresidentDataSource {
         President(42, "Bill Clinton", "Bill Clinton.jpg", "1993-2001", "Democratic"),
         President(43, "George W. Bush", "George W. Bush.jpg", "2001-2009", "Republican"),
         President(44, "Barack Obama", "Barack Obama.jpg", "2009-2017", "Democratic"),
-        President(45, "Donald Trump", "Donald Trump.jpg", "2017-2021", "Republican")
+        President(45, "Donald Trump", "Donald Trump.jpg", "2017-2021", "Republican"),
+        President(46, "Joe Biden", "Joe Biden.jpg", "2021-2025", "Democratic"),
+        President(47, "Donald Trump", "Donald Trump.jpg", "2025-2029", "Republican")
     )
 } 
