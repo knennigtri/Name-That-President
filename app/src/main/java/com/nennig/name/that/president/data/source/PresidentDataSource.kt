@@ -1,0 +1,53 @@
+package com.nennig.name.that.president.data.source
+
+import com.nennig.name.that.president.domain.model.President
+
+object PresidentDataSource {
+    val presidents = listOf(
+        President(1, "George Washington", "George Washington.jpg", "1789-1797", "Independent"),
+        President(2, "John Adams", "John Adams.jpg", "1797-1801", "Federalist"),
+        President(3, "Thomas Jefferson", "Thomas Jefferson.jpg", "1801-1809", "Democratic-Republican"),
+        President(4, "James Madison", "James Madison.jpg", "1809-1817", "Democratic-Republican"),
+        President(5, "James Monroe", "James Monroe.jpg", "1817-1825", "Democratic-Republican"),
+        President(6, "John Quincy Adams", "John Quincy Adams.jpg", "1825-1829", "Democratic-Republican"),
+        President(7, "Andrew Jackson", "Andrew Jackson.jpg", "1829-1837", "Democratic"),
+        President(8, "Martin Van Buren", "Martin Van Buren.jpg", "1837-1841", "Democratic"),
+        President(9, "William H. Harrison", "William H. Harrison.jpg", "1841", "Whig"),
+        President(10, "John Tyler", "John Tyler Brady.jpg", "1841-1845", "Whig"),
+        President(11, "James K. Polk", "James K. Polk.jpg", "1845-1849", "Democratic"),
+        President(12, "Zachary Taylor", "Zachary Taylor.jpg", "1849-1850", "Whig"),
+        President(13, "Millard Fillmore", "Millard Fillmore.jpg", "1850-1853", "Whig"),
+        President(14, "Franklin Pierce", "Franklin Pierce.jpg", "1853-1857", "Democratic"),
+        President(15, "James Buchanan", "James Buchanan.jpg", "1857-1861", "Democratic"),
+        President(16, "Abraham Lincoln", "Abraham Lincoln.jpg", "1861-1865", "Republican"),
+        President(17, "Andrew Johnson", "Andrew Johnson.jpg", "1865-1869", "Democratic"),
+        President(18, "Ulysses S. Grant", "Ulysses S. Grant.jpg", "1869-1877", "Republican"),
+        President(19, "Rutherford B. Hayes", "Rutherford B Hayes.jpg", "1877-1881", "Republican"),
+        President(20, "James Garfield", "James Garfield.jpg", "1881", "Republican"),
+        President(21, "Chester A. Arthur", "Chester A Arthur.jpg", "1881-1885", "Republican"),
+        President(22, "Grover Cleveland", "Grover Cleveland.jpg", "1885-1889", "Democratic"),
+        President(23, "Benjamin Harrison", "Benjamin Harrison.jpg", "1889-1893", "Republican"),
+        President(24, "Grover Cleveland", "Grover Cleveland.jpg", "1893-1897", "Democratic"),
+        President(25, "William McKinley", "William McKinley.jpg", "1897-1901", "Republican"),
+        President(26, "Theodore Roosevelt", "Theodore Teddy Roosevelt.jpg", "1901-1909", "Republican"),
+        President(27, "William Howard Taft", "William Howard Taft.jpg", "1909-1913", "Republican"),
+        President(28, "Woodrow Wilson", "Woodrow Wilson.jpg", "1913-1921", "Democratic"),
+        President(29, "Warren G. Harding", "Warren G. Harding.jpg", "1921-1923", "Republican"),
+        President(30, "Calvin Coolidge", "Calvin Coolidge.jpg", "1923-1929", "Republican"),
+        President(31, "Herbert Hoover", "Herbert Hoover.jpg", "1929-1933", "Republican"),
+        President(32, "Franklin D. Roosevelt", "Franklin Delano Roosevelt.jpg", "1933-1945", "Democratic"),
+        President(33, "Harry S. Truman", "Harry S. Truman.jpg", "1945-1953", "Democratic"),
+        President(34, "Dwight D. Eisenhower", "Dwight D. Eisenhower.jpg", "1953-1961", "Republican"),
+        President(35, "John F. Kennedy", "John F. Kennedy.jpg", "1961-1963", "Democratic"),
+        President(36, "Lyndon B. Johnson", "Lyndon Johnson.jpg", "1963-1969", "Democratic"),
+        President(37, "Richard Nixon", "Richard Nixon.jpg", "1969-1974", "Republican"),
+        President(38, "Gerald Ford", "Gerald Ford.jpg", "1974-1977", "Republican"),
+        President(39, "Jimmy Carter", "Jimmy Carter.jpg", "1977-1981", "Democratic"),
+        President(40, "Ronald Reagan", "Ronald Reagan.jpg", "1981-1989", "Republican"),
+        President(41, "George H. W. Bush", "George Bush.jpg", "1989-1993", "Republican"),
+        President(42, "Bill Clinton", "Bill Clinton.jpg", "1993-2001", "Democratic"),
+        President(43, "George W. Bush", "George W. Bush.jpg", "2001-2009", "Republican"),
+        President(44, "Barack Obama", "Barack Obama.jpg", "2009-2017", "Democratic"),
+        President(45, "Donald Trump", "Donald Trump.jpg", "2017-2021", "Republican")
+    )
+} 
